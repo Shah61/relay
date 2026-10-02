@@ -28,7 +28,14 @@ async function api(path, body) {
     body: body === undefined ? undefined : JSON.stringify(body),
     signal: AbortSignal.timeout(15000),
   });
-  const data = await response.json();
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw Error(
+      `Account service returned an unexpected response (HTTP ${response.status}). Please retry after the deployment finishes.`,
+    );
+  }
   if (!response.ok)
     throw Error((data.error ?? "Connection unavailable").replaceAll("_", " "));
   return data;

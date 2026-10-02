@@ -1,10 +1,13 @@
 // Same-origin account proxy keeps HttpOnly sessions first-party on the Vercel dashboard.
-import { dashboardOrigin } from '../../lib/dashboard-origin.mjs';
+import { dashboardOrigin } from '../lib/dashboard-origin.mjs';
 const allowed = new Set(['me','logout','computers','computers/revoke','auth/options','auth/verify','enrollment/details','enrollment/approve','access/start','access/status','access/finish']);
 export default async function handler(req,res) {
   res.setHeader('Cache-Control','no-store');
   try {
-    const pathname = new URL(req.url,'https://local.invalid').pathname.replace(/^\/account-api\//,'').replace(/^\/api\/account\//,'');
+    const url = new URL(req.url, 'https://local.invalid');
+    const pathname = url.pathname.startsWith('/account-api/')
+      ? url.pathname.slice('/account-api/'.length)
+      : url.searchParams.get('route');
     if(!allowed.has(pathname)||!['GET','POST'].includes(req.method))return res.status(404).json({error:'not_found'});
     const base=new URL(process.env.RELAY_PUBLIC_URL??'');if(base.protocol!=='wss:'||base.origin+'/'!==base.href)throw Error('invalid_release_configuration');
     const origin=dashboardOrigin();
