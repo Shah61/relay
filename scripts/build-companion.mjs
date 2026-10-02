@@ -9,27 +9,26 @@ import { execFileSync } from "node:child_process";
 const release = process.argv.includes("--release");
 const dashboard = process.env.PM_DASHBOARD_ORIGIN,
   relay = process.env.PM_RELAY_ORIGIN;
-let product = { configured: false, dashboardOrigin: null, relayOrigin: null };
-if (release && (!dashboard || !relay)) {
-  throw Error(
-    "Release builds require PM_DASHBOARD_ORIGIN and PM_RELAY_ORIGIN (exact HTTPS origins).",
-  );
-}
+let product = JSON.parse(readFileSync("companion/product.json", "utf8"));
 if (dashboard || relay) {
   if (!dashboard || !relay)
     throw Error(
       "Set both PM_DASHBOARD_ORIGIN and PM_RELAY_ORIGIN, or leave both unset for a development build.",
     );
-  for (const value of [dashboard, relay]) {
-    const u = new URL(value ?? "");
-    if (u.protocol !== "https:" || u.origin !== value)
-      throw Error("Release URLs must be exact HTTPS origins");
-  }
   product = {
     configured: true,
     dashboardOrigin: dashboard,
     relayOrigin: relay,
   };
+}
+if (release && product.configured !== true)
+  throw Error("Configure companion/product.json or set both PM_DASHBOARD_ORIGIN and PM_RELAY_ORIGIN before building a release.");
+if (product.configured === true) {
+  for (const value of [product.dashboardOrigin, product.relayOrigin]) {
+    const u = new URL(value ?? "");
+    if (u.protocol !== "https:" || u.origin !== value)
+      throw Error("Release URLs must be exact HTTPS origins");
+  }
 }
 rmSync(".companion", { recursive: true, force: true });
 mkdirSync(".companion", { recursive: true });

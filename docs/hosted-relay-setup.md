@@ -28,7 +28,7 @@ Official references: [Railway WebSocket networking](https://docs.railway.com/net
 4. Choose **Start automatically when I sign in**. The companion starts the local bridge and reconnects to the relay when the computer is online. Keep the computer awake for remote work.
 5. Open the same Vercel dashboard on your phone. Your authorized computers appear as separate online/offline cards. Select one to authorize an encrypted browser channel and control sessions on that computer.
 
-For development builds, run `npm run companion:build` and use `npm run companion:dev`; it intentionally displays “Service not configured” until a release is built with `PM_DASHBOARD_ORIGIN` and `PM_RELAY_ORIGIN`. Create installers only after deployment with `PM_DASHBOARD_ORIGIN=https://... PM_RELAY_ORIGIN=https://... npm run companion:package`.
+Run `npm run companion:dev` to build and open the companion with the deployed public addresses saved in `companion/product.json`. No environment variables are needed for the normal launch. Maintainers can override both addresses together using `PM_DASHBOARD_ORIGIN` and `PM_RELAY_ORIGIN`; credentials are never stored in product configuration. Quit the running companion before rebuilding, since a second launch reopens the existing process. Create installers with `npm run companion:package`.
 
 Legacy manual bridge setup remains useful for development only. A production user should not run `npm run pair -- create owner`, enter URLs, or copy a host token.
 

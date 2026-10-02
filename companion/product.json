@@ -1,5 +1,5 @@
 {
-  "configured": false,
-  "dashboardOrigin": null,
-  "relayOrigin": null
+  "configured": true,
+  "dashboardOrigin": "https://relay-five-opal.vercel.app",
+  "relayOrigin": "https://relay-production-21ce.up.railway.app"
 }

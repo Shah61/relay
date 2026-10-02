@@ -21,6 +21,7 @@ async function refresh() {
     $("connect").hidden = state.enrolled;
     $("connect").disabled = !state.configured || state.pending || busy;
     $("dashboard").hidden = !state.enrolled;
+    $("dashboard").disabled = !state.configured || busy;
     $("phone-section").hidden = !state.connected;
     $("autostart").checked = state.autoStart;
     $("autostart").disabled = !state.packaged;
