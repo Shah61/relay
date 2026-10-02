@@ -4,6 +4,8 @@ test-fixture/.git/
 
 config.local.json
 dist-web/
+.companion/
+companion-dist/
 .env
 .env.*
 test-fixture/

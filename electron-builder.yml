@@ -1,0 +1,30 @@
+appId: com.promptmanager.companion
+productName: Prompt Manager Companion
+directories:
+  app: .companion
+  output: companion-dist
+files:
+  - companion/**
+  - runtime/**
+  - package.json
+asar: true
+asarUnpack:
+  - runtime/**
+  - node_modules/**
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+  hardenedRuntime: true
+  notarize: true
+win:
+  target:
+    - target: nsis
+      arch: [x64, arm64]
+nsis:
+  oneClick: true
+  perMachine: false
+  runAfterFinish: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true

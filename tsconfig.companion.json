@@ -1,0 +1,6 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "noEmit": false, "rewriteRelativeImportExtensions": true, "rootDir": ".", "outDir": ".companion/runtime" },
+  "include": ["src/**/*.ts"],
+  "exclude": ["tests", "scripts", "service"]
+}

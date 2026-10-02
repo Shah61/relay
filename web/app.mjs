@@ -213,7 +213,7 @@ async function refresh(discovery = false) {
           "p",
           connection.remote
             ? `Connected to ${connection.name} through your encrypted relay.`
-            : "Set up your hosted relay once, then scan a QR code. Your phone only needs its browser.",
+            : "Connect this computer in Prompt Manager Companion. Then sign in on your phone or scan a QR code.",
           "notice",
         ),
       );
@@ -890,40 +890,10 @@ async function hostStatus() {
     $("#host-state").textContent =
       `Relay: ${human(status.state)}${status.hostName ? " · " + status.hostName : ""}`;
     $("#create-qr").disabled = status.state !== "connected";
-    for (const key of ["hostName", "relayUrl", "frontendUrl"])
-      if (status[key] && !document.activeElement?.closest("#host-configure"))
-        $("#host-" + key).value = status[key];
   } catch (e) {
     $("#host-state").textContent = e.message;
   }
 }
-$("#host-configure").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  event.submitter.disabled = true;
-  try {
-    const input = Object.fromEntries(
-      ["hostName", "relayUrl", "frontendUrl", "hostToken"].map((key) => [
-        key,
-        $("#host-" + key).value.trim(),
-      ]),
-    );
-    await client.get("/api/host/configure", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-Token": client.csrf,
-      },
-      body: JSON.stringify(input),
-    });
-    $("#host-hostToken").value = "";
-    toast("Settings saved. Connecting to your relay…");
-    await hostStatus();
-  } catch (e) {
-    notice(e.message, true);
-  } finally {
-    event.submitter.disabled = false;
-  }
-});
 let invitationId, invitationTimer;
 $("#create-qr").addEventListener("click", async () => {
   $("#create-qr").disabled = true;

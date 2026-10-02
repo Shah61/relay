@@ -100,10 +100,16 @@ if (!app.requestSingleInstanceLock()) { app.quit(); } else {
     handle('pm:pair',()=>local('/admin/companion/pair',{}));
     handle('pm:autostart',enabled=>{if(!app.isPackaged)throw Error('Automatic startup is available after installation');app.setLoginItemSettings({openAtLogin:enabled===true,args:['--background']});});
     const svg='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><rect x="2" y="2" width="20" height="20" rx="6" fill="#7044c6"/><path d="M8 17V7h6a3 3 0 0 1 0 6H8m4 0 5 4" fill="none" stroke="white" stroke-width="2"/></svg>';
-    tray=new Tray(nativeImage.createFromDataURL('data:image/svg+xml;base64,'+Buffer.from(svg).toString('base64')));
+    let trayIcon=nativeImage.createFromDataURL('data:image/svg+xml;base64,'+Buffer.from(svg).toString('base64'));
+    if(trayIcon.isEmpty()) trayIcon=await app.getFileIcon(process.execPath,{size:'small'});
+    tray=new Tray(trayIcon);
     tray.setToolTip('Prompt Manager Companion');tray.setContextMenu(Menu.buildFromTemplate([{label:'Open Prompt Manager',click:show},{label:'Quit',click:()=>app.quit()}]));tray.on('click',show);
     bootBridge(); if(!process.argv.includes('--background'))show();
   });
   app.on('second-instance',show);app.on('activate',show);app.on('window-all-closed',()=>{});
-  app.on('before-quit',()=>{quitting=true;clearInterval(pollingTimer);clearTimeout(restartTimer);worker?.kill();});
+  app.on('before-quit',event=>{
+    if(quitting)return;
+    quitting=true;clearInterval(pollingTimer);clearTimeout(restartTimer);
+    if(worker){event.preventDefault();const current=worker;current.once('exit',()=>app.quit());current.postMessage({type:'shutdown'});setTimeout(()=>{current.kill();app.quit();},10000).unref();}
+  });
 }

@@ -4,3 +4,6 @@
 !src/
 !src/relay/
 !src/relay/server.ts
+!src/relay/accounts.ts
+!src/security/
+!src/security/rate-limit.ts

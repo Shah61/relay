@@ -3,6 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "companion:build": "node scripts/build-companion.mjs",
+    "companion:dev": "npm run companion:build && electron .companion",
+    "companion:package": "node scripts/build-companion.mjs --release && npm ci --prefix .companion --omit=dev --ignore-scripts && electron-builder --config electron-builder.yml",
     "start": "node --experimental-strip-types scripts/start.ts",
     "relay": "node --experimental-strip-types src/relay/server.ts",
     "build:dashboard": "node scripts/build-dashboard.mjs",

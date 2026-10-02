@@ -120,3 +120,4 @@ sessions.on("storage_failure", storageFailure);
 store.onFailure = storageFailure;
 process.on("SIGINT", () => void stop());
 process.on("SIGTERM", () => void stop());
+(process as any).parentPort?.on('message', (event: any) => { if(event.data?.type === 'shutdown') void stop(); });
