@@ -6,3 +6,4 @@ config.local.json
 dist-web/
 .env
 .env.*
+test-fixture/
