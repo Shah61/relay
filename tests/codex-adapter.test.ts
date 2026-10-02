@@ -22,7 +22,8 @@ test("UNIT: common Codex adapter retains Phase 2 raw tool events and native IDs"
   class Transport extends EventEmitter {
     closed = false;
     async initialize() {}
-    async request() {
+    async request(method: string) {
+      if (method === 'model/list') return { data: [{ model: 'test-model', displayName: 'Test', isDefault: true, defaultReasoningEffort: 'medium', supportedReasoningEfforts: [{ reasoningEffort: 'medium', description: 'Balanced' }] }], nextCursor: null };
       return { thread: { id: thread } };
     }
     send() {}

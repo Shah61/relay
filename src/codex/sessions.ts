@@ -18,6 +18,8 @@ export type Session = {
   generation: string;
   status: string;
   busy?: boolean;
+  model?: string;
+  reasoningEffort?: string;
 };
 export type Approval = {
   id: string;
@@ -184,7 +186,7 @@ export class Sessions extends EventEmitter {
       throw new Error("Session disconnected; resume is outside this POC");
     return s;
   }
-  async start(project: string) {
+  async start(project: string, settings: { model?: string; reasoningEffort?: string } = {}) {
     const cwd = Object.hasOwn(this.projects, project)
       ? this.projects[project]
       : undefined;
@@ -199,6 +201,8 @@ export class Sessions extends EventEmitter {
     this.starting.add(project);
     try {
       const r = await this.codex.request("thread/start", {
+        model: settings.model,
+        config: settings.reasoningEffort ? { model_reasoning_effort: settings.reasoningEffort } : undefined,
         cwd,
         sandbox: "workspace-write",
         approvalPolicy: "untrusted",
@@ -213,6 +217,7 @@ export class Sessions extends EventEmitter {
         activeTurnId: null,
         generation: this.generation,
         status: "idle",
+        ...settings,
       };
       this.sessions[s.id] = s;
       this.persist();
@@ -235,6 +240,8 @@ export class Sessions extends EventEmitter {
     this.persist();
     try {
       const r = await this.codex.request("turn/start", {
+        model: s.model,
+        effort: s.reasoningEffort,
         threadId: s.threadId,
         input: [{ type: "text", text }],
       });

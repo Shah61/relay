@@ -11,6 +11,7 @@ import { capabilities } from "../agents/capabilities.ts";
 import { Codex } from "./protocol.ts";
 import { Sessions } from "./sessions.ts";
 import { findExecutable } from "../platform/host.ts";
+import { discoverModels, listModels, selectModel } from './models.ts';
 export class CodexAdapter extends AgentAdapter {
   agent = "codex" as const;
   generation = randomUUID();
@@ -41,7 +42,11 @@ export class CodexAdapter extends AgentAdapter {
         timeout: 10000,
         windowsHide: true,
       });
+      let models, modelError;
+      try { models = await discoverModels(executable); }
+      catch (error) { modelError = error instanceof Error ? error.message : String(error); }
       return {
+        models, modelError,
         agent: "codex",
         adapterInstalled: true,
         sdkAvailable: true,
@@ -51,7 +56,7 @@ export class CodexAdapter extends AgentAdapter {
         state: "ready",
         ready: true,
         reason:
-          "CLI found; model entitlement not probed. Phase 2 authenticated task evidence retained.",
+          "Models come from this computer’s Codex catalog; account access is checked when a task runs.",
       };
     } catch {
       return {
@@ -228,7 +233,8 @@ export class CodexAdapter extends AgentAdapter {
       this.emitEvent(ev);
     });
     await rpc.initialize();
-    const s = await engine.start(o.project);
+    const settings = selectModel(await listModels(rpc), o.model, o.reasoningEffort);
+    const s = await engine.start(o.project, settings);
     this.id = s.id;
     this.emitEvent({
       type: "session.state_changed",

@@ -26,6 +26,8 @@ export type Capability = {
 };
 export type Capabilities = Record<Feature, Capability>;
 export type Availability = {
+  models?: import('../codex/models.ts').Model[];
+  modelError?: string;
   agent: Agent;
   adapterInstalled: boolean;
   sdkAvailable: boolean;
@@ -131,6 +133,8 @@ export type AdapterEvent = {
   resolvedId?: string;
 };
 export type AdapterStart = {
+  model?: string;
+  reasoningEffort?: string;
   cwd: string;
   project: string;
   bridgeSessionId: string;

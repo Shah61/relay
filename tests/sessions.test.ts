@@ -27,6 +27,15 @@ function setup(t: any) {
   const s = new Sessions(c as unknown as Codex, dir, { fixture: "/fixture" });
   return { c, s, dir };
 }
+test('Selected model and reasoning reach thread creation and every turn', async (t) => {
+  const { c, s } = setup(t);
+  const session = await s.start('fixture', { model: 'catalog-model', reasoningEffort: 'high' });
+  assert.equal(c.calls[0].p.model, 'catalog-model');
+  assert.equal(c.calls[0].p.config.model_reasoning_effort, 'high');
+  await s.prompt(session.id, 'Hello');
+  assert.equal(c.calls.at(-1).p.model, 'catalog-model');
+  assert.equal(c.calls.at(-1).p.effort, 'high');
+});
 test("allowlist, early thread notification, persistence and monotonic sequence", async (t) => {
   const { c, s, dir } = setup(t);
   await assert.rejects(s.start("/tmp/arbitrary"));

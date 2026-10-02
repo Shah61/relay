@@ -248,7 +248,7 @@ export function httpServer(
         throw new Error("Invalid body");
       const kind = url.pathname === "/sessions" ? "start" : action!;
       const allowed: Record<string, string[]> = {
-        start: ["project", "agent"],
+        start: ["project", "agent", "model", "reasoningEffort"],
         prompt: ["text"],
         queue: ["text"],
         steer: ["text"],

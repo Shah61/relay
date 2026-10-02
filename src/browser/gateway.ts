@@ -370,7 +370,7 @@ export function browserGateway(
         const input = await body(req);
         const kind = url.pathname === "/api/sessions" ? "start" : action!;
         const allowed: Record<string, string[]> = {
-          start: ["project", "agent"],
+          start: ["project", "agent", "model", "reasoningEffort"],
           prompt: ["text"],
           queue: ["text"],
           steer: ["text"],

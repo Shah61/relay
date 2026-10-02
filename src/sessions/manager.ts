@@ -394,6 +394,7 @@ export class Sessions extends EventEmitter {
             input.project,
             input.agent ?? "codex",
             operationId,
+            { model: input.model, reasoningEffort: input.reasoningEffort },
           );
           break;
         case "prompt":
@@ -484,8 +485,11 @@ export class Sessions extends EventEmitter {
     }
     return { operation: this.store.operation(operationId), replayed: false };
   }
-  async start(project: string, agent: Agent = "codex", operationId?: string) {
+  async start(project: string, agent: Agent = "codex", operationId?: string, settings: { model?: string; reasoningEffort?: string } = {}) {
     if (!["codex", "claude"].includes(agent)) throw new Error("Unknown agent");
+    for (const value of [settings.model, settings.reasoningEffort])
+      if (value !== undefined && (typeof value !== 'string' || !value || value.length > 200)) throw Error('Invalid model settings');
+    if (agent !== 'codex' && (settings.model !== undefined || settings.reasoningEffort !== undefined)) throw Error('Model selection is currently supported for Codex only');
     const { cwd, worktree } = this.resolveProject(project);
     this.lease(worktree);
     const a = this.factory(agent),
@@ -534,6 +538,7 @@ export class Sessions extends EventEmitter {
     try {
       this.dispatch(s.id);
       await a.start({
+        ...settings,
         cwd,
         project,
         bridgeSessionId: s.id,

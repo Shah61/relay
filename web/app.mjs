@@ -717,14 +717,42 @@ $("#toggle-inspector").onclick = () =>
   ($("#inspector").hidden = !$("#inspector").hidden);
 $("#input-mode").onchange = renderDetail;
 function startHint() {
+  const isCodex = $("#start-agent").value === "codex";
+  $("#codex-settings").hidden = !isCodex;
   const a = agents.find((a) => a.agent === $("#start-agent").value);
   $("#start-hint").textContent = a
     ? `${a.availability.ready ? "Available" : human(a.availability.state)}. ${a.agent === "claude" ? "Runtime unverified. " : ""}${a.availability.reason ?? "One writing session per worktree."}`
     : "Agent availability unknown";
   $("#start-submit").disabled =
-    busy || !canWrite() || !a?.availability.ready || !projects.length;
+    busy || !canWrite() || !a?.availability.ready || !projects.length || (isCodex && !$("#start-model").value);
+  if (isCodex && a?.availability.modelError)
+    $("#start-hint").textContent = `Could not load Codex models: ${a.availability.modelError}`;
 }
+function modelChoices() {
+  const models = agents.find(a => a.agent === "codex")?.availability.models ?? [];
+  $("#start-model").replaceChildren(...models.map(m => {
+    const option = el("option", `${m.displayName}${m.isDefault ? " (default)" : ""}`);
+    option.value = m.model;
+    return option;
+  }));
+  const defaultModel = models.find(m => m.isDefault);
+  if (defaultModel) $("#start-model").value = defaultModel.model;
+  effortChoices();
+}
+function effortChoices() {
+  const models = agents.find(a => a.agent === "codex")?.availability.models ?? [];
+  const model = models.find(m => m.model === $("#start-model").value);
+  $("#start-effort").replaceChildren(...(model?.supportedReasoningEfforts ?? []).map(e => {
+    const option = el("option", `${human(e.reasoningEffort)}${e.description ? " — " + e.description : ""}`);
+    option.value = e.reasoningEffort;
+    return option;
+  }));
+  if (model) $("#start-effort").value = model.defaultReasoningEffort;
+  startHint();
+}
+$("#start-model").onchange = effortChoices;
 $("#new-session").onclick = () => {
+  modelChoices();
   $("#start-project").replaceChildren(
     ...projects.map((p) => {
       const o = el("option", p.id);
@@ -742,6 +770,10 @@ $("#start-form").onsubmit = async (e) => {
     const result = await mutate("/api/sessions", {
       project: $("#start-project").value,
       agent: $("#start-agent").value,
+      ...($("#start-agent").value === "codex" ? {
+        model: $("#start-model").value,
+        reasoningEffort: $("#start-effort").value,
+      } : {}),
     });
     if (result.operation?.state === "completed") {
       $("#new-dialog").close();
