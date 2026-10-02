@@ -12,7 +12,9 @@ import { browserGateway } from "../browser/gateway.ts";
 import { localAdmin } from "../browser/admin.ts";
 import { httpServer } from "./http.ts";
 import { RelayHost } from "../relay/host.ts";
-const root = process.env.PROMPT_MANAGER_DATA_DIR ? resolve(process.env.PROMPT_MANAGER_DATA_DIR) : resolve(import.meta.dirname, "../.."),
+const root = process.env.PROMPT_MANAGER_DATA_DIR
+    ? resolve(process.env.PROMPT_MANAGER_DATA_DIR)
+    : resolve(import.meta.dirname, "../.."),
   dir = resolve(root, ".bridge");
 mkdirSync(dir, { recursive: true, mode: 0o700 });
 const config = loadConfig(root),
@@ -34,7 +36,11 @@ const sessions = new Sessions(
   { store },
 );
 const auth = new DeviceAuth(store, Object.keys(config.projects));
-const server = httpServer(sessions, token, localAdmin(auth, () => relay, sessions));
+const server = httpServer(
+  sessions,
+  token,
+  localAdmin(auth, () => relay, sessions),
+);
 let browser: ReturnType<typeof browserGateway> | undefined;
 let relay: RelayHost | undefined;
 server.requestTimeout = 15000;
@@ -64,7 +70,13 @@ server.listen(config.port, "127.0.0.1", () => {
   });
   browser.listen(config.browser.port, "127.0.0.1", () => {
     const url = `http://127.0.0.1:${config.browser.port}`;
-    relay = new RelayHost(auth, dir, url, token, process.env.PROMPT_MANAGER_MANAGED === '1');
+    relay = new RelayHost(
+      auth,
+      dir,
+      url,
+      token,
+      process.env.PROMPT_MANAGER_MANAGED === "1",
+    );
     relay.start();
     console.log(`Dashboard: ${url}`);
   });
@@ -120,4 +132,6 @@ sessions.on("storage_failure", storageFailure);
 store.onFailure = storageFailure;
 process.on("SIGINT", () => void stop());
 process.on("SIGTERM", () => void stop());
-(process as any).parentPort?.on('message', (event: any) => { if(event.data?.type === 'shutdown') void stop(); });
+(process as any).parentPort?.on("message", (event: any) => {
+  if (event.data?.type === "shutdown") void stop();
+});

@@ -1,5 +1,12 @@
-import { mkdirSync, readFileSync, writeFileSync, copyFileSync, cpSync } from "node:fs";
+import {
+  mkdirSync,
+  readFileSync,
+  writeFileSync,
+  copyFileSync,
+  cpSync,
+} from "node:fs";
 const url = new URL(process.env.RELAY_PUBLIC_URL ?? "");
+const dashboardOrigin = process.env.DASHBOARD_ORIGIN ?? "";
 if (
   url.protocol !== "wss:" ||
   url.username ||
@@ -9,6 +16,8 @@ if (
   url.pathname !== "/"
 )
   throw Error("Set RELAY_PUBLIC_URL to the exact wss:// Railway origin");
+if (!/^https:\/\/[^/]+$/.test(dashboardOrigin))
+  throw Error("Set DASHBOARD_ORIGIN to the exact Vercel HTTPS origin");
 mkdirSync("dist-web", { recursive: true });
 for (const name of [
   "app.mjs",
@@ -31,8 +40,16 @@ writeFileSync(
     `<head>\n<meta name="relay-hosted" content="true">\n<meta http-equiv="Content-Security-Policy" content="${policy}">`,
   ),
 );
-writeFileSync('dist-web/index.html',readFileSync('web/account.html','utf8').replace('<head>',`<head><meta http-equiv="Content-Security-Policy" content="${policy}">`));
-cpSync('node_modules/@simplewebauthn/browser/esm','dist-web/vendor/webauthn',{recursive:true});
+writeFileSync(
+  "dist-web/index.html",
+  readFileSync("web/account.html", "utf8").replace(
+    "<head>",
+    `<head><meta http-equiv="Content-Security-Policy" content="${policy}">`,
+  ),
+);
+cpSync("node_modules/@simplewebauthn/browser/esm", "dist-web/vendor/webauthn", {
+  recursive: true,
+});
 console.log(
   "Built static dashboard with a single allowed relay origin. No credentials included.",
 );

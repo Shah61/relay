@@ -1,1 +1,164 @@
-:root{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#30243f;background:#f8f5fc}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top left,#e8ddf8,transparent 55%)}main{max-width:940px;padding:35px 28px;margin:auto;min-height:100vh}header{display:flex;align-items:center;justify-content:space-between;margin-bottom:80px}.brand{color:#55318e;font-weight:800;text-decoration:none;font-size:22px}.chip{display:inline-block;background:#ebe1f9;border-radius:8px;padding:8px 12px;font-size:10px;letter-spacing:2px;font-weight:700;color:#7952ad}h1{font-size:48px;line-height:1.12;letter-spacing:-1.8px;margin:22px 0}p{color:#7f728f;line-height:1.65}form{display:grid;gap:15px;max-width:420px;margin:30px 0}input{padding:15px;border-radius:12px;border:1px solid #dbceec;background:white;font:inherit}button{cursor:pointer;border-radius:12px;border:1px solid #e0d4ee;background:#fff;padding:13px 18px;color:#5b397f;font-weight:650}.primary{background:#7043c7;color:white;border:0;box-shadow:0 6px 20px #7043c71a}button:disabled{opacity:.55;cursor:wait}.hint{max-width:430px;font-size:13px}.computer-card{display:flex;justify-content:space-between;gap:18px;align-items:center;background:#fff;border:1px solid #e3d9ef;padding:24px;border-radius:20px;margin:18px 0;box-shadow:0 6px 24px #37205205}.computer-card h2{font-size:19px;margin:0}.computer-card p{font-size:13px;margin:8px 0 0}.computer-card .actions{display:flex;gap:8px;flex-wrap:wrap}.setup-note{margin-top:35px;border-top:1px solid #e2d6ee;padding-top:20px}.setup-note h2{font-size:18px}.setup-note p{font-size:14px}#message{color:#724597;min-height:25px}footer{margin-top:70px;color:#93849f;font-size:11px;letter-spacing:1px}[hidden]{display:none!important}@media(max-width:600px){main{padding:25px 20px}header{margin-bottom:55px}.brand{font-size:18px}h1{font-size:36px}.computer-card{align-items:flex-start;flex-direction:column}.computer-card .actions{width:100%}.computer-card .primary{flex:1}}
+:root {
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  color: #30243f;
+  background: #f8f5fc;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at top left, #e8ddf8, transparent 55%);
+}
+main {
+  max-width: 940px;
+  padding: 35px 28px;
+  margin: auto;
+  min-height: 100vh;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 80px;
+}
+.brand {
+  color: #55318e;
+  font-weight: 800;
+  text-decoration: none;
+  font-size: 22px;
+}
+.chip {
+  display: inline-block;
+  background: #ebe1f9;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: #7952ad;
+}
+h1 {
+  font-size: 48px;
+  line-height: 1.12;
+  letter-spacing: -1.8px;
+  margin: 22px 0;
+}
+p {
+  color: #7f728f;
+  line-height: 1.65;
+}
+form {
+  display: grid;
+  gap: 15px;
+  max-width: 420px;
+  margin: 30px 0;
+}
+input {
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #dbceec;
+  background: white;
+  font: inherit;
+}
+button {
+  cursor: pointer;
+  border-radius: 12px;
+  border: 1px solid #e0d4ee;
+  background: #fff;
+  padding: 13px 18px;
+  color: #5b397f;
+  font-weight: 650;
+}
+.primary {
+  background: #7043c7;
+  color: white;
+  border: 0;
+  box-shadow: 0 6px 20px #7043c71a;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.hint {
+  max-width: 430px;
+  font-size: 13px;
+}
+.computer-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e3d9ef;
+  padding: 24px;
+  border-radius: 20px;
+  margin: 18px 0;
+  box-shadow: 0 6px 24px #37205205;
+}
+.computer-card h2 {
+  font-size: 19px;
+  margin: 0;
+}
+.computer-card p {
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+.computer-card .actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.setup-note {
+  margin-top: 35px;
+  border-top: 1px solid #e2d6ee;
+  padding-top: 20px;
+}
+.setup-note h2 {
+  font-size: 18px;
+}
+.setup-note p {
+  font-size: 14px;
+}
+#message {
+  color: #724597;
+  min-height: 25px;
+}
+footer {
+  margin-top: 70px;
+  color: #93849f;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 600px) {
+  main {
+    padding: 25px 20px;
+  }
+  header {
+    margin-bottom: 55px;
+  }
+  .brand {
+    font-size: 18px;
+  }
+  h1 {
+    font-size: 36px;
+  }
+  .computer-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .computer-card .actions {
+    width: 100%;
+  }
+  .computer-card .primary {
+    flex: 1;
+  }
+}

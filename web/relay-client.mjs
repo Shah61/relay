@@ -30,11 +30,21 @@ async function records(action, value) {
     db.close();
   }
 }
-export const storedComputers = () => records('getAll');
-export async function forgetComputers() { const profiles = await records('getAll'); for (const profile of profiles) await records('delete', profile.hostId); }
+export const storedComputers = () => records("getAll");
+export async function forgetComputers() {
+  const profiles = await records("getAll");
+  for (const profile of profiles) await records("delete", profile.hostId);
+}
 export async function authorizedComputer(payload) {
-  const profile = { hostId: payload.hostId, hostName: payload.hostName, relay: payload.relay, channelId: payload.device.id, key: await deriveKey(payload.secret) };
-  await records('put', profile); localStorage.setItem('relay.activeComputer',profile.hostId);
+  const profile = {
+    hostId: payload.hostId,
+    hostName: payload.hostName,
+    relay: payload.relay,
+    channelId: payload.device.id,
+    key: await deriveKey(payload.secret),
+  };
+  await records("put", profile);
+  localStorage.setItem("relay.activeComputer", profile.hostId);
 }
 export function parseInvitation(hash) {
   if (!hash.startsWith("#pair=")) return null;

@@ -2,7 +2,7 @@
 
 A durable local bridge and responsive purple dashboard for Codex and Claude Code, with an **own-hosted encrypted relay and QR phone pairing**. Railway hosts the WebSocket routing service; Vercel hosts the static dashboard. Your phone needs only a browser. Codex retains Phase 2 runtime proof; Claude remains implemented and runtime-unverified. Native Windows/Linux launch support is implemented but awaits real platform acceptance; the relay has been tested locally on macOS.
 
-Start with the numbered [Railway → Vercel → computer → phone setup guide](docs/hosted-relay-setup.md). Deployment and physical-phone acceptance remain pending. Read the [browser contract](docs/client-contract.md) and [OpenAPI](docs/browser-openapi.json) for local gateway operations. Earlier reports, Tailscale instructions, and evidence remain as historical records in `docs/`.
+Start with the [companion account setup guide](docs/hosted-relay-setup.md). Users install Prompt Manager Companion, choose Connect this computer, authorize with a passkey in the Vercel dashboard, and then see that computer in the dashboard. Users never enter Railway/Vercel URLs or host tokens. Deployment and physical-phone acceptance remain pending. Earlier reports, Tailscale instructions, and evidence remain as historical records in `docs/`.
 
 Requires Node 22.18+ with built-in `node:sqlite`. The real bridge runs only on loopback; its relay connector makes outbound connections. The local dashboard is `http://127.0.0.1:47832/`. No Tailscale or persistent OS service is required or installed.
 
@@ -14,7 +14,7 @@ npm run test:failure
 npm start
 ```
 
-`npm start` opens and pairs the local owner dashboard. **Connect phone** contains one-time relay settings and the QR button. The manual command `npm run pair -- create owner` is also available on Mac, Windows, and Linux. A phone never runs npm. Keep the computer awake and the bridge running. Use `npm run relay` only for the separately hosted routing server, with its environment variables configured as described in the setup guide.
+For development, `npm start` still opens the local bridge dashboard. Production users use the signed Companion installer. The manual command `npm run pair -- create owner` is retained only as a developer fallback; normal users never need it. A phone never runs npm.
 
 The bridge binds loopback and starts **no agent at startup**. Tests use synthetic events and harmless local subprocesses; process/HTTP tests require permission to inspect processes and bind loopback. Operational state is `.bridge/bridge.sqlite`. Legacy JSON/evidence stays untouched. Startup may report held old leases; it never assumes their processes stopped.
 

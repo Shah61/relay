@@ -10,10 +10,10 @@ import { join } from "node:path";
 import { WebSocket } from "ws";
 import QRCode from "qrcode";
 import { DeviceAuth } from "../security/devices.ts";
-import { verifyAuthenticationResponse } from '@simplewebauthn/server';
-import type { AccountKey } from './accounts.ts';
+import { verifyAuthenticationResponse } from "@simplewebauthn/server";
+import type { AccountKey } from "./accounts.ts";
 // @ts-ignore Shared Web Crypto module.
-import { wrapAccess } from '../../web/access-crypto.mjs';
+import { wrapAccess } from "../../web/access-crypto.mjs";
 // @ts-ignore Shared browser module uses native Web Crypto on Node 22.
 import { cipher, deriveKey } from "../../web/e2e.mjs";
 
@@ -61,7 +61,10 @@ export class RelayHost {
   secrets: Record<string, string> = {};
   master: Buffer;
   managed = false;
-  accessRequests = new Map<string, { publicKey: string; challenge: string; expires: number }>();
+  accessRequests = new Map<
+    string,
+    { publicKey: string; challenge: string; expires: number }
+  >();
   constructor(
     auth: DeviceAuth,
     dir: string,
@@ -195,25 +198,90 @@ export class RelayHost {
   }
   async accountAccess(message: any) {
     const account = this.config?.account;
-    if (!account || !this.config || !/^[a-f0-9-]{36}$/.test(message.id)) throw Error('Account access unavailable');
-    for (const [id, request] of this.accessRequests) if (request.expires < Date.now()) this.accessRequests.delete(id);
-    if (message.type === 'access-start') {
-      if (message.ownerId !== account.ownerId || typeof message.publicKey !== 'string' || !/^[A-Za-z0-9_-]{87}$/.test(message.publicKey) || this.accessRequests.size >= 20 || this.accessRequests.has(message.id)) throw Error('Invalid access request');
+    if (!account || !this.config || !/^[a-f0-9-]{36}$/.test(message.id))
+      throw Error("Account access unavailable");
+    for (const [id, request] of this.accessRequests)
+      if (request.expires < Date.now()) this.accessRequests.delete(id);
+    if (message.type === "access-start") {
+      if (
+        message.ownerId !== account.ownerId ||
+        typeof message.publicKey !== "string" ||
+        !/^[A-Za-z0-9_-]{87}$/.test(message.publicKey) ||
+        this.accessRequests.size >= 20 ||
+        this.accessRequests.has(message.id)
+      )
+        throw Error("Invalid access request");
       // The fresh challenge binds this exact computer, request and ephemeral encryption key.
-      const challenge = createHash('sha256').update(JSON.stringify(['pm-access-v1', this.config.hostId, message.id, message.publicKey, randomBytes(32).toString('base64url')])).digest('base64url');
-      this.accessRequests.set(message.id, { publicKey: message.publicKey, challenge, expires: Date.now() + 120000 });
-      this.send({ type: 'access-challenge', id: message.id, options: { challenge, rpId: account.rpId, allowCredentials: [{ type: 'public-key', id: account.id }], timeout: 90000, userVerification: 'required' } });
+      const challenge = createHash("sha256")
+        .update(
+          JSON.stringify([
+            "pm-access-v1",
+            this.config.hostId,
+            message.id,
+            message.publicKey,
+            randomBytes(32).toString("base64url"),
+          ]),
+        )
+        .digest("base64url");
+      this.accessRequests.set(message.id, {
+        publicKey: message.publicKey,
+        challenge,
+        expires: Date.now() + 120000,
+      });
+      this.send({
+        type: "access-challenge",
+        id: message.id,
+        options: {
+          challenge,
+          rpId: account.rpId,
+          allowCredentials: [{ type: "public-key", id: account.id }],
+          timeout: 90000,
+          userVerification: "required",
+        },
+      });
     } else {
-      const request = this.accessRequests.get(message.id); this.accessRequests.delete(message.id);
-      if (!request || request.expires < Date.now()) throw Error('Access request expired');
-      const check = await verifyAuthenticationResponse({ response: message.response, expectedChallenge: request.challenge, expectedOrigin: account.origin, expectedRPID: account.rpId, requireUserVerification: true, credential: { id: account.id, publicKey: Buffer.from(account.publicKey, 'base64url'), counter: 0 } });
-      if (!check.verified) throw Error('Passkey verification failed');
-      if (!this.auth.projects.length) throw Error('Choose at least one local project first');
-      const invitation = this.auth.pairing('operator', this.auth.projects), paired = this.auth.exchange(invitation.code, 'Account-authorized browser');
+      const request = this.accessRequests.get(message.id);
+      this.accessRequests.delete(message.id);
+      if (!request || request.expires < Date.now())
+        throw Error("Access request expired");
+      const check = await verifyAuthenticationResponse({
+        response: message.response,
+        expectedChallenge: request.challenge,
+        expectedOrigin: account.origin,
+        expectedRPID: account.rpId,
+        requireUserVerification: true,
+        credential: {
+          id: account.id,
+          publicKey: Buffer.from(account.publicKey, "base64url"),
+          counter: 0,
+        },
+      });
+      if (!check.verified) throw Error("Passkey verification failed");
+      if (!this.auth.projects.length)
+        throw Error("Choose at least one local project first");
+      const invitation = this.auth.pairing("operator", this.auth.projects),
+        paired = this.auth.exchange(
+          invitation.code,
+          "Account-authorized browser",
+        );
       this.secrets[paired.device.id] = paired.secret;
-      try { this.saveSecrets(); } catch (e) { this.auth.revoke(paired.device.id); throw e; }
-      const encrypted = await wrapAccess(request.publicKey, `${this.config.hostId}:${message.id}`, { ...paired, hostId: this.config.hostId, hostName: this.config.hostName, relay: this.config.relayUrl });
-      this.send({ type: 'access-result', id: message.id, encrypted });
+      try {
+        this.saveSecrets();
+      } catch (e) {
+        this.auth.revoke(paired.device.id);
+        throw e;
+      }
+      const encrypted = await wrapAccess(
+        request.publicKey,
+        `${this.config.hostId}:${message.id}`,
+        {
+          ...paired,
+          hostId: this.config.hostId,
+          hostName: this.config.hostName,
+          relay: this.config.relayUrl,
+        },
+      );
+      this.send({ type: "access-result", id: message.id, encrypted });
     }
   }
   async invitation(role: "operator" | "viewer", projects: string[]) {
@@ -481,8 +549,12 @@ export class RelayHost {
       if (this.socket !== ws) return;
       try {
         const m = JSON.parse(data.toString());
-        if (['access-start', 'access-finish'].includes(m.type)) {
-          void this.accountAccess(m).catch(() => { try { this.send({ type: 'access-error', id: m.id }); } catch {} });
+        if (["access-start", "access-finish"].includes(m.type)) {
+          void this.accountAccess(m).catch(() => {
+            try {
+              this.send({ type: "access-error", id: m.id });
+            } catch {}
+          });
           return;
         }
         if (m.type === "ready") {
