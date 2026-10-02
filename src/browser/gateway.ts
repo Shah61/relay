@@ -166,6 +166,7 @@ export function browserGateway(
           return;
         }
         if (req.method === "POST" && url.pathname === "/api/host/configure") {
+          if (relay.managed) throw new AccessError('companion_manages_connection', 403);
           json(relay.configure(await body(req, 4096)));
           return;
         }

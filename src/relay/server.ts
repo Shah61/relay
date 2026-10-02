@@ -2,9 +2,13 @@ import { createServer } from "node:http";
 import { randomUUID, timingSafeEqual } from "node:crypto";
 import { WebSocketServer, WebSocket } from "ws";
 import { pathToFileURL } from "node:url";
+import { Accounts } from './accounts.ts';
+import { mkdirSync } from 'node:fs';
+import { join } from 'node:path';
 
-export function createRelay(token: string, origins: string[]) {
-  if (token.length < 32 || !origins.length)
+export function createRelay(token: string | Accounts, origins: string[]) {
+  const accounts = typeof token === 'string' ? undefined : token;
+  if ((typeof token === 'string' && token.length < 32) || !origins.length)
     throw Error(
       "RELAY_HOST_TOKEN (32+ characters) and FRONTEND_ORIGINS are required",
     );
@@ -13,8 +17,10 @@ export function createRelay(token: string, origins: string[]) {
     string,
     { socket: WebSocket; hostId: string; channelId: string }
   >();
-  const server = createServer((req, res) => {
+  const server = createServer(async (req, res) => {
     res.setHeader("Cache-Control", "no-store");
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    if (accounts && await accounts.handle(req, res)) return;
     res.writeHead(req.url === "/health" ? 200 : 404, {
       "Content-Type": "application/json",
     });
@@ -39,24 +45,29 @@ export function createRelay(token: string, origins: string[]) {
     }
     ws.send(JSON.stringify(value));
   };
+  if (accounts) {
+    accounts.online = id => hosts.get(id)?.readyState === WebSocket.OPEN;
+    accounts.sendHost = (id, message) => { const ws = hosts.get(id); if (!ws) throw Error('computer_offline'); send(ws, message); };
+    accounts.revokeHost = id => hosts.get(id)?.close(1008, 'Computer revoked');
+  }
   server.on("upgrade", (req, socket, head) => {
     const host = req.url === "/host";
     const actual = Buffer.from(req.headers.authorization ?? "");
-    const wanted = Buffer.from(`Bearer ${token}`);
+    const wanted = Buffer.from(`Bearer ${typeof token === 'string' ? token : ''}`);
+    const enrolled = accounts?.hostAuth(String(req.headers.authorization ?? '').replace(/^Bearer /, ''));
     const authorized = host
       ? !req.headers.origin &&
-        actual.length === wanted.length &&
-        timingSafeEqual(actual, wanted)
+        (accounts ? !!enrolled : actual.length === wanted.length && timingSafeEqual(actual, wanted))
       : req.url === "/client" && origins.includes(req.headers.origin ?? "");
     if (!authorized || wss.clients.size >= 128) {
       socket.end("HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n");
       return;
     }
     wss.handleUpgrade(req, socket, head, (ws) =>
-      wss.emit("connection", ws, host),
+      wss.emit("connection", ws, host, enrolled?.id),
     );
   });
-  wss.on("connection", (ws: WebSocket, isHost: boolean) => {
+  wss.on("connection", (ws: WebSocket, isHost: boolean, enrolledId?: string) => {
     let hostId = "",
       linkId = "",
       initialized = false,
@@ -91,6 +102,7 @@ export function createRelay(token: string, origins: string[]) {
             throw Error("hello");
           hostId = m.hostId;
           if (isHost) {
+            if (accounts && hostId !== enrolledId) throw Error('Credential belongs to another computer');
             if (hosts.has(hostId) || hosts.size >= 16)
               throw Error("host already connected");
             hosts.set(hostId, ws);
@@ -116,6 +128,7 @@ export function createRelay(token: string, origins: string[]) {
           return;
         }
         if (isHost) {
+          if (accounts && ['access-challenge', 'access-result', 'access-error'].includes(m.type)) { accounts.receiveHost(hostId, m); return; }
           const client = clients.get(m.linkId);
           if (!client || client.hostId !== hostId) return;
           if (m.type === "close") client.socket.close(1008, "Channel closed");
@@ -163,13 +176,12 @@ if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
-  const relay = createRelay(
-    process.env.RELAY_HOST_TOKEN ?? "",
-    (process.env.FRONTEND_ORIGINS ?? "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean),
-  );
+  const origin = process.env.DASHBOARD_ORIGIN ?? '';
+  const dir = process.env.RELAY_DATA_DIR;
+  if (!dir) throw Error('RELAY_DATA_DIR must point to a persistent Railway volume');
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  const accounts = new Accounts(join(dir, 'accounts.sqlite'), origin);
+  const relay = createRelay(accounts, [origin]);
   relay.server.listen(Number(process.env.PORT ?? 8080), "0.0.0.0", () =>
     console.log("Relay listening"),
   );

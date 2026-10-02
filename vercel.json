@@ -2,6 +2,7 @@
   "buildCommand": "node scripts/build-dashboard.mjs",
   "outputDirectory": "dist-web",
   "framework": null,
+  "rewrites": [{ "source": "/account-api/:path*", "destination": "/api/account/:path*" }],
   "headers": [
     {
       "source": "/(.*)",

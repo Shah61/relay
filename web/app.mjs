@@ -4,6 +4,7 @@ window.addEventListener("hashchange", () => {
   if (location.hash.startsWith("#pair=") || location.hash.startsWith("#local="))
     location.reload();
 });
+window.addEventListener('storage', event => { if(event.key === 'pm.signedOut') location.replace('/'); });
 const $ = (s) => document.querySelector(s),
   $$ = (s) => [...document.querySelectorAll(s)];
 let connection;
