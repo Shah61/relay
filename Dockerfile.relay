@@ -4,6 +4,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts
 COPY src/relay ./src/relay
 COPY src/security/rate-limit.ts ./src/security/rate-limit.ts
+COPY src/security/devices.ts ./src/security/devices.ts
 COPY web/e2e.mjs ./web/e2e.mjs
 COPY web/access-crypto.mjs ./web/access-crypto.mjs
 USER node

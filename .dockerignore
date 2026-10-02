@@ -7,3 +7,7 @@
 !src/relay/accounts.ts
 !src/security/
 !src/security/rate-limit.ts
+!src/security/devices.ts
+!web/
+!web/e2e.mjs
+!web/access-crypto.mjs
