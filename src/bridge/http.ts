@@ -109,7 +109,7 @@ export function httpServer(
         }
       }
       const match = url.pathname.match(
-        /^\/sessions\/([a-f0-9-]+)(?:\/(events|prompt|queue|steer|interrupt|approvals|stop|close|resume))?$/,
+        /^\/sessions\/([a-f0-9-]+)(?:\/(events|prompt|queue|steer|interrupt|approvals|stop|close|end|delete|clear|resume))?$/,
       );
       const id = match?.[1],
         action = match?.[2];
@@ -248,13 +248,16 @@ export function httpServer(
         throw new Error("Invalid body");
       const kind = url.pathname === "/sessions" ? "start" : action!;
       const allowed: Record<string, string[]> = {
-        start: ["project", "agent", "model", "reasoningEffort"],
+        start: ["project", "agent", "model", "reasoningEffort", "isolated"],
         prompt: ["text"],
         queue: ["text"],
         steer: ["text"],
         interrupt: [],
         stop: [],
         close: [],
+        end: [],
+        delete: [],
+        clear: [],
         resume: [],
         approvals: ["approvalId", "generation", "decision", "answers"],
       };

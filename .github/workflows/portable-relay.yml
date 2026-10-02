@@ -16,5 +16,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: node --experimental-strip-types --test tests/relay.test.ts
+      - run: node --experimental-strip-types --test tests/relay.test.ts tests/preview.test.ts tests/preview-launch.test.ts tests/session-management.test.ts
       - run: npm run test:client

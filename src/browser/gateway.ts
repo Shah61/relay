@@ -11,6 +11,7 @@ import { DeviceAuth, AccessError, type Device } from "../security/devices.ts";
 import { RateLimit } from "../security/rate-limit.ts";
 import { contract, truncated } from "./contract.ts";
 import type { RelayHost } from "../relay/host.ts";
+import type { PreviewTargets } from "../preview/targets.ts";
 export type BrowserOptions = {
   port: number;
   remoteOrigin?: string;
@@ -18,6 +19,7 @@ export type BrowserOptions = {
   coreToken: string;
   assetDir?: string;
   relay?: () => RelayHost | undefined;
+  previews?: PreviewTargets;
 };
 export async function body(req: IncomingMessage, max = 32768) {
   const chunks: Buffer[] = [];
@@ -231,7 +233,7 @@ export function browserGateway(
         if (!Number.isSafeInteger(offset) || offset < 0)
           throw new AccessError("invalid_offset", 400);
         const all = Object.values(sessions.sessions).filter((s) =>
-          device.projects.includes(s.project),
+          device.projects.includes(s.project) && !s.archivedAt,
         );
         const count = sessions.store.policy.sessionPage;
         json({
@@ -242,6 +244,21 @@ export function browserGateway(
           latestEventSequence: sessions.seq,
         });
         return;
+      }
+      if (req.method === "GET" && url.pathname === "/api/previews") {
+        json({ previews: options.previews?.view(device.projects) ?? [], hosted: !!options.relay?.()?.config?.account }); return;
+      }
+      const previewAction = url.pathname.match(/^\/api\/previews\/([a-f0-9-]+)\/(approve|disable)$/);
+      if (req.method === "POST" && previewAction) {
+        auth.canWrite(device);
+        if (!options.previews) throw new AccessError("preview_unavailable", 503);
+        const input = await body(req, 1024);
+        if (Object.keys(input).length) throw new AccessError("unknown_fields", 400);
+        const target = options.previews.get(previewAction[1]);
+        auth.canProject(device, target.project);
+        if (previewAction[2] === "approve") await options.previews.approve(target.id);
+        else options.previews.revoke(target.id);
+        json({ saved: true }); return;
       }
       if (req.method === "GET" && url.pathname === "/api/approvals") {
         json({
@@ -304,7 +321,7 @@ export function browserGateway(
         return;
       }
       const match = url.pathname.match(
-        /^\/api\/sessions\/([a-f0-9-]+)(?:\/(events|prompt|queue|steer|interrupt|approvals|stop|close|resume))?$/,
+        /^\/api\/sessions\/([a-f0-9-]+)(?:\/(events|prompt|queue|steer|interrupt|approvals|stop|close|end|delete|clear|resume))?$/,
       );
       const id = match?.[1],
         action = match?.[2];
@@ -374,13 +391,16 @@ export function browserGateway(
         const input = await body(req);
         const kind = url.pathname === "/api/sessions" ? "start" : action!;
         const allowed: Record<string, string[]> = {
-          start: ["project", "agent", "model", "reasoningEffort"],
+          start: ["project", "agent", "model", "reasoningEffort", "isolated"],
           prompt: ["text"],
           queue: ["text"],
           steer: ["text"],
           interrupt: [],
           stop: [],
           close: [],
+          end: [],
+          delete: [],
+          clear: [],
           resume: [],
           approvals: ["approvalId", "generation", "decision", "answers"],
         };

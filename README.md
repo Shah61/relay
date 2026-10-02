@@ -8,6 +8,8 @@ Requires Node 22.18+ with built-in `node:sqlite`. The real bridge runs only on l
 
 Session details include a dedicated **Codex replies** section (or Claude Code replies), with streamed messages assembled into Markdown, separate progress updates, and a Copy Markdown button. Headings, lists, code blocks, tables, quotes, and task lists render in replies and activity. The composer offers Markdown preview before sending. Only retained history is available; expired history and truncated text are labeled. Markdown is sanitized, remote images are omitted, and links open separately without a referrer.
 
+Mobile sessions now provide Close, Clear chat, Delete, Clear draft, and New session. Drafting remains available during errors or closed sessions. Separate Git workspaces allow multiple sessions per project. [Remote Preview](docs/remote-preview.md) detects reported dev-server candidates and exposes approved loopback apps through owner-authorized Railway preview IDs. Maintainers must provision isolated wildcard preview hosting and rebuild/deploy the dashboard, relay, and Companion; no per-server tunnel or port setup is required from users. Full Vite/Next HMR and native Windows preview acceptance remain unverified.
+
 ```sh
 npm ci
 npm run build

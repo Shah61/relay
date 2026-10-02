@@ -97,6 +97,10 @@ export type Session = {
   reconciliationRequired?: boolean;
   uncertainty?: string[];
   controlClosed?: boolean;
+  archivedAt?: string;
+  historyClearedThrough?: number;
+  isolatedWorkspace?: boolean;
+  workspaceCwd?: string;
   queueUncertain?: boolean;
   leaseHeld: boolean;
   capabilities: Capabilities;

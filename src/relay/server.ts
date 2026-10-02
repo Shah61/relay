@@ -5,9 +5,11 @@ import { pathToFileURL } from "node:url";
 import { Accounts } from "./accounts.ts";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { PreviewRelay } from "../preview/relay.ts";
 
-export function createRelay(token: string | Accounts, origins: string[]) {
+export function createRelay(token: string | Accounts, origins: string[], options: { previewOriginTemplate?: string } = {}) {
   const accounts = typeof token === "string" ? undefined : token;
+  const previews = accounts && options.previewOriginTemplate ? new PreviewRelay(accounts, options.previewOriginTemplate) : undefined;
   if ((typeof token === "string" && token.length < 32) || !origins.length)
     throw Error(
       "RELAY_HOST_TOKEN (32+ characters) and FRONTEND_ORIGINS are required",
@@ -20,6 +22,7 @@ export function createRelay(token: string | Accounts, origins: string[]) {
   const server = createServer(async (req, res) => {
     res.setHeader("Cache-Control", "no-store");
     res.setHeader("X-Content-Type-Options", "nosniff");
+    if (previews && (await previews.handle(req, res))) return;
     if (accounts && (await accounts.handle(req, res))) return;
     res.writeHead(req.url === "/health" ? 200 : 404, {
       "Content-Type": "application/json",
@@ -52,10 +55,13 @@ export function createRelay(token: string | Accounts, origins: string[]) {
       if (!ws) throw Error("computer_offline");
       send(ws, message);
     };
-    accounts.revokeHost = (id) =>
+    accounts.revokeHost = (id) => {
+      previews?.revokeComputer(id);
       hosts.get(id)?.close(1008, "Computer revoked");
+    };
   }
   server.on("upgrade", (req, socket, head) => {
+    if (previews?.upgrade(req, socket, head)) return;
     const host = req.url === "/host";
     const actual = Buffer.from(req.headers.authorization ?? "");
     const wanted = Buffer.from(
@@ -179,6 +185,7 @@ export function createRelay(token: string | Accounts, origins: string[]) {
         clearInterval(heartbeat);
         if (isHost && hosts.get(hostId) === ws) {
           hosts.delete(hostId);
+          previews?.revokeComputer(hostId);
           for (const c of clients.values())
             if (c.hostId === hostId)
               c.socket.close(1013, "Computer disconnected");
@@ -192,7 +199,9 @@ export function createRelay(token: string | Accounts, origins: string[]) {
   );
   return {
     server,
+    previews,
     close: async () => {
+      previews?.close();
       for (const ws of wss.clients) ws.terminate();
       wss.close();
       await new Promise<void>((r) => server.close(() => r()));
@@ -209,7 +218,7 @@ if (
     throw Error("Attach a persistent Railway volume (for example /data), or set RELAY_DATA_DIR to your persistent storage directory. Railway volume mount paths are detected automatically.");
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   const accounts = new Accounts(join(dir, "accounts.sqlite"), origin);
-  const relay = createRelay(accounts, [origin]);
+  const relay = createRelay(accounts, [origin], { previewOriginTemplate: process.env.PREVIEW_ORIGIN_TEMPLATE });
   relay.server.listen(Number(process.env.PORT ?? 8080), "0.0.0.0", () =>
     console.log("Relay listening"),
   );

@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { EventEmitter } from "node:events";
-import { realpathSync } from "node:fs";
+import { realpathSync, mkdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import {
   AgentAdapter,
   validateText,
@@ -328,10 +328,14 @@ export class Sessions extends EventEmitter {
       actions: {
         stopAgent: this.adapters.has(id) && s.process.state !== "exited",
         closeSession: !s.controlClosed,
+        endSession: !s.controlClosed || (this.adapters.has(id) && s.process.state !== "exited"),
+        deleteSession: !s.archivedAt,
+        clearHistory: true,
         releaseWorktree: "offline_local_only",
       },
       reconciliationRequired: !!s.reconciliationRequired,
       uncertainty: s.uncertainty ?? [],
+      historyStartCursor: s.historyClearedThrough ?? 0,
     };
   }
   async agents() {
@@ -383,7 +387,7 @@ export class Sessions extends EventEmitter {
         throw new Error("Bridge not accepting mutations");
       if (kind === "start")
         key = `worktree:${this.resolveProject(input.project).worktree}`;
-      if (this.busy.has(key))
+      if (this.busy.has(key) && !["end", "delete"].includes(kind))
         throw new Error("Conflicting operation in progress");
       this.busy.set(key, operationId);
       this.store.transition(operationId, "accepted");
@@ -395,7 +399,7 @@ export class Sessions extends EventEmitter {
             input.project,
             input.agent ?? "codex",
             operationId,
-            { model: input.model, reasoningEffort: input.reasoningEffort },
+            { model: input.model, reasoningEffort: input.reasoningEffort, isolated: input.isolated },
           );
           break;
         case "prompt":
@@ -424,6 +428,20 @@ export class Sessions extends EventEmitter {
           break;
         case "close":
           result = await this.close(id!);
+          break;
+        case "end":
+          result = await this.end(id!);
+          break;
+        case "delete":
+          await this.end(id!);
+          this.get(id!).archivedAt = new Date().toISOString();
+          this.record(this.get(id!), { type: "session.archived", source: "bridge", raw: {} });
+          result = this.view(this.get(id!));
+          break;
+        case "clear":
+          this.get(id!).historyClearedThrough = this.seq;
+          this.record(this.get(id!), { type: "session.history_cleared", source: "bridge", raw: {} });
+          result = this.view(this.get(id!));
           break;
         case "resume":
           result = await this.resume(id!);
@@ -486,23 +504,42 @@ export class Sessions extends EventEmitter {
     }
     return { operation: this.store.operation(operationId), replayed: false };
   }
-  async start(project: string, agent: Agent = "codex", operationId?: string, settings: { model?: string; reasoningEffort?: string } = {}) {
+  async start(project: string, agent: Agent = "codex", operationId?: string, settings: { model?: string; reasoningEffort?: string; isolated?: boolean } = {}) {
     if (!["codex", "claude"].includes(agent)) throw new Error("Unknown agent");
     for (const value of [settings.model, settings.reasoningEffort])
       if (value !== undefined && (typeof value !== 'string' || !value || value.length > 200)) throw Error('Invalid model settings');
     if (agent !== 'codex' && (settings.model !== undefined || settings.reasoningEffort !== undefined)) throw Error('Model selection is currently supported for Codex only');
-    const { cwd, worktree } = this.resolveProject(project);
-    this.lease(worktree);
-    const a = this.factory(agent),
-      available = await a.availability();
-    if (!available.ready)
-      throw new Error(`${agent} not ready: ${available.state}`);
+    if (settings.isolated !== undefined && typeof settings.isolated !== "boolean") throw Error("Invalid workspace option");
+    let { cwd, worktree } = this.resolveProject(project);
+    const id = randomUUID();
+    let isolatedWorkspace = false;
+    const a = this.factory(agent), available = await a.availability();
+    if (!available.ready) throw new Error(`${agent} not ready: ${available.state}`);
     if (this.stopping) throw new Error("Bridge stopping");
+    if (Object.keys(this.sessions).length >= this.store.policy.maxSessions) throw new Error("Session capacity reached");
+    if (settings.isolated) {
+      // Separate committed workspaces keep the existing single-writer guarantee intact.
+      let git = false;
+      try {
+        execFileSync("git", ["-C", worktree, "rev-parse", "--show-toplevel"], { stdio: "pipe", timeout: 2000 });
+        git = true;
+      } catch {
+        if (this.store.lease(worktree)) throw Error("This non-Git folder is reserved. Add a separate project folder or reconcile the previous process on your computer.");
+      }
+      if (git) {
+        try { execFileSync("git", ["-C", worktree, "rev-parse", "--verify", "HEAD"], { stdio: "pipe", timeout: 2000 }); }
+        catch { throw Error("A separate Git workspace needs an initial commit. Commit on your computer or uncheck the separate workspace option for the first session."); }
+        const isolated = join(this.dir, "worktrees", id);
+        mkdirSync(join(this.dir, "worktrees"), { recursive: true, mode: 0o700 });
+        execFileSync("git", ["-C", worktree, "worktree", "add", "--detach", isolated, "HEAD"], { stdio: "pipe", timeout: 30000 });
+        cwd = realpathSync(join(isolated, relative(worktree, cwd)));
+        worktree = realpathSync(isolated);
+        isolatedWorkspace = true;
+      }
+    }
     this.lease(worktree);
-    if (Object.keys(this.sessions).length >= this.store.policy.maxSessions)
-      throw new Error("Session capacity reached");
     const s: Session = {
-      id: randomUUID(),
+      id,
       agent,
       project,
       worktree,
@@ -525,6 +562,8 @@ export class Sessions extends EventEmitter {
       availability: available,
       reconciliationRequired: false,
       uncertainty: [],
+      isolatedWorkspace,
+      workspaceCwd: cwd,
     };
     this.store.tx(() => {
       this.store.saveSession(s);
@@ -746,6 +785,16 @@ export class Sessions extends EventEmitter {
     });
     return this.view(s);
   }
+  async end(id: string) {
+    const s = this.get(id);
+    // Closing control is immediate, even when stopping an errored adapter fails.
+    await this.close(id);
+    if (this.adapters.has(id) && s.process.state !== "exited") {
+      try { await this.stopAgent(id); }
+      catch (error) { this.record(s, { type: "process.stop_failed", source: "bridge", raw: { message: String(error) }, state: { reconciliationRequired: true } }); }
+    }
+    return this.view(s);
+  }
   async resume(id: string) {
     const s = this.get(id);
     if (
@@ -763,7 +812,9 @@ export class Sessions extends EventEmitter {
     const availability = await a.availability();
     if (!availability.ready || this.stopping)
       throw new Error("Agent not ready");
-    const { cwd, worktree } = this.resolveProject(s.project);
+    const resolved = this.resolveProject(s.project);
+    const cwd = s.workspaceCwd ? realpathSync(s.workspaceCwd) : resolved.cwd;
+    const worktree = worktreeIdentity(cwd);
     if (worktree !== s.worktree) throw new Error("Project worktree changed");
     this.lease(worktree, s.id);
     this.adapters.get(id)?.removeAllListeners("event");

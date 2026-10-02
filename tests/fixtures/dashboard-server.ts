@@ -15,6 +15,9 @@ import { createRelay } from "../../src/relay/server.ts";
 import { createServer } from "node:http";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { execFileSync } from "node:child_process";
+import { PreviewTargets } from "../../src/preview/targets.ts";
+let devPort = 0;
 class Demo extends AgentAdapter {
   agent: Agent;
   generation = randomUUID();
@@ -79,6 +82,7 @@ class Demo extends AgentAdapter {
       raw: { testHarness: true },
       turn: { id, state: "running" },
     });
+    this.emitEvent({ type: "command.output", source: "native", raw: { params: { delta: `Local: http://localhost:${devPort}\n` } } });
     const reply = `## Simulated Codex reply\n\n**Markdown is ready.** This is a test response; no commands ran.\n\n- Formatted lists\n- Inline \`code\` and **bold text**\n\n\`\`\`js\nconst ready = true;\n\`\`\`\n\n| Feature | Status |\n| --- | --- |\n| Replies | Ready |\n| Markdown | Ready |\n\n> Please review the simulated approval below.\n\nYour prompt:\n\n${text}`;
     if (this.agent === "codex") {
       const itemId = id + "-reply";
@@ -187,10 +191,15 @@ class Demo extends AgentAdapter {
 }
 const dir = mkdtempSync(join(tmpdir(), "relay-ui-"));
 mkdirSync(join(dir, "project"));
+for (const args of [["init", "--quiet"], ["-c", "user.name=Fixture", "-c", "user.email=test@example.invalid", "commit", "--quiet", "--allow-empty", "-m", "fixture"]])
+  execFileSync("git", ["-C", join(dir, "project"), ...args], { stdio: "pipe" });
 const sessions = new Sessions((a) => new Demo(a), join(dir, "state"), {
   "test-project": join(dir, "project"),
 });
 const auth = new DeviceAuth(sessions.store, ["test-project"]);
+const previews = new PreviewTargets(sessions);
+const dev = createServer((_req, res) => res.end("Disposable development preview"));
+dev.listen(0, "127.0.0.1"); await once(dev, "listening"); devPort = (dev.address() as any).port;
 const core = httpServer(sessions, "test-only-token");
 core.listen(0, "127.0.0.1");
 await once(core, "listening");
@@ -199,6 +208,7 @@ const gateway = browserGateway(sessions, auth, {
   coreUrl: `http://127.0.0.1:${(core.address() as any).port}`,
   coreToken: "test-only-token",
   relay: () => relayHost,
+  previews,
 });
 let relayHost: RelayHost | undefined;
 gateway.listen(47833, "127.0.0.1");
@@ -287,6 +297,7 @@ async function stop() {
   if (stopping) return;
   stopping = true;
   relayHost?.stop();
+  previews.close(); dev.closeAllConnections(); dev.close();
   await relayServer?.close();
   frontend?.closeAllConnections();
   frontend?.close();

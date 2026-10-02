@@ -12,6 +12,8 @@ import { browserGateway } from "../browser/gateway.ts";
 import { localAdmin } from "../browser/admin.ts";
 import { httpServer } from "./http.ts";
 import { RelayHost } from "../relay/host.ts";
+import { PreviewTargets } from "../preview/targets.ts";
+import { PreviewCompanion } from "../preview/companion.ts";
 const root = process.env.PROMPT_MANAGER_DATA_DIR
     ? resolve(process.env.PROMPT_MANAGER_DATA_DIR)
     : resolve(import.meta.dirname, "../.."),
@@ -43,6 +45,7 @@ const server = httpServer(
 );
 let browser: ReturnType<typeof browserGateway> | undefined;
 let relay: RelayHost | undefined;
+const previews = new PreviewTargets(sessions, [config.port, config.browser.port]);
 server.requestTimeout = 15000;
 server.headersTimeout = 10000;
 server.keepAliveTimeout = 5000;
@@ -62,6 +65,7 @@ server.listen(config.port, "127.0.0.1", () => {
     coreUrl: `http://127.0.0.1:${address.port}`,
     coreToken: token,
     relay: () => relay,
+    previews,
   });
   browser.on("error", (e) => {
     console.error("Browser gateway failed:", String(e));
@@ -77,6 +81,7 @@ server.listen(config.port, "127.0.0.1", () => {
       token,
       process.env.PROMPT_MANAGER_MANAGED === "1",
     );
+    relay.previews = new PreviewCompanion(previews);
     relay.start();
     console.log(`Dashboard: ${url}`);
   });
@@ -97,6 +102,7 @@ async function stop() {
   sessions.stopping = true;
   clearInterval(monitor);
   relay?.stop();
+  previews.close();
   browser?.close();
   browser?.closeAllConnections();
   server.close();

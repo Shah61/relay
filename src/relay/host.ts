@@ -12,6 +12,7 @@ import QRCode from "qrcode";
 import { DeviceAuth } from "../security/devices.ts";
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import type { AccountKey } from "./accounts.ts";
+import type { PreviewCompanion } from "../preview/companion.ts";
 // @ts-ignore Shared Web Crypto module.
 import { wrapAccess } from "../../web/access-crypto.mjs";
 // @ts-ignore Shared browser module uses native Web Crypto on Node 22.
@@ -36,12 +37,12 @@ type Link = {
 };
 export function allowedRemotePath(path: string, method: string) {
   if (method === "GET")
-    return /^\/(?:auth\/me|api\/(?:contract|projects|agents|health|diagnostics|devices|approvals|sessions(?:\/[a-f0-9-]+(?:\/events)?)?|operations\/[a-zA-Z0-9_-]{8,80}))(?:\?(?:after|offset)=\d+)?$/.test(
+    return /^\/(?:auth\/me|api\/(?:contract|projects|agents|health|diagnostics|devices|approvals|previews|sessions(?:\/[a-f0-9-]+(?:\/events)?)?|operations\/[a-zA-Z0-9_-]{8,80}))(?:\?(?:after|offset)=\d+)?$/.test(
       path,
     );
   return (
     method === "POST" &&
-    /^\/(?:auth\/logout|api\/(?:sessions(?:\/[a-f0-9-]+\/(?:prompt|queue|steer|interrupt|approvals|stop|close|resume))?|devices\/[a-f0-9-]+\/revoke))$/.test(
+    /^\/(?:auth\/logout|api\/(?:sessions(?:\/[a-f0-9-]+\/(?:prompt|queue|steer|interrupt|approvals|stop|close|end|delete|clear|resume))?|previews\/[a-f0-9-]+\/(?:approve|disable)|devices\/[a-f0-9-]+\/revoke))$/.test(
       path,
     )
   );
@@ -61,6 +62,7 @@ export class RelayHost {
   secrets: Record<string, string> = {};
   master: Buffer;
   managed = false;
+  previews?: PreviewCompanion;
   accessRequests = new Map<
     string,
     { publicKey: string; challenge: string; expires: number }
@@ -560,6 +562,7 @@ export class RelayHost {
         if (m.type === "ready") {
           this.state = "connected";
           this.attempts = 0;
+          if (this.config) this.previews?.connect(this.config);
         } else if (m.type === "open")
           void this.open(m.linkId, m.channelId).catch(() => {
             try {
@@ -584,6 +587,7 @@ export class RelayHost {
       clearInterval(heartbeat);
       if (this.socket !== ws) return;
       this.state = "offline";
+      this.previews?.disconnect();
       for (const id of this.links.keys()) this.drop(id);
       if (!this.stopped)
         this.retry = setTimeout(
@@ -594,6 +598,7 @@ export class RelayHost {
     });
   }
   disconnect() {
+    this.previews?.disconnect();
     clearTimeout(this.retry);
     for (const id of this.links.keys()) this.drop(id);
     const ws = this.socket;
@@ -602,6 +607,7 @@ export class RelayHost {
     this.state = "offline";
   }
   stop() {
+    this.previews?.close();
     this.stopped = true;
     this.disconnect();
     this.auth.off("revoke", this.revoked);

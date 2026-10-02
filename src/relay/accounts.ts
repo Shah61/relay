@@ -41,6 +41,7 @@ export class Accounts {
     throw Error("computer_offline");
   };
   revokeHost: (id: string) => void = () => {};
+  openPreview: (userId: string, token: string, id: string) => { url: string } = () => { throw Error("preview_hosting_unavailable"); };
   access = new Map<
     string,
     { ownerId: string; hostId: string; expires: number; result: any }
@@ -426,6 +427,12 @@ export class Accounts {
               .get(session.userId) as any
           ).name,
         });
+        return true;
+      }
+      if (path === "/account-api/previews/open" && req.method === "GET") {
+        const url = new URL(req.url ?? "/", this.origin);
+        if ([...url.searchParams.keys()].some(k => k !== "id")) throw Error("invalid_preview_request");
+        send(this.openPreview(session.userId, session.token, url.searchParams.get("id") ?? ""));
         return true;
       }
       if (path === "/account-api/logout" && req.method === "POST") {

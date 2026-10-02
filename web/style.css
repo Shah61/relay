@@ -1361,6 +1361,26 @@ dialog .primary {
   padding: 5px 8px;
   font-size: 10px;
 }
+
+.preview-section { padding: 18px 24px; border-bottom: 1px solid var(--border, #e8e0ee); }
+.preview-heading, .preview-card, .preview-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.preview-heading { justify-content: space-between; margin-bottom: 12px; }
+.preview-heading h3 { margin: 0; }
+.preview-card { justify-content: space-between; padding: 12px 0; }
+.preview-card p { margin: 6px 0; }
+.preview-open { display: inline-block; padding: 10px 14px; border-radius: 8px; background: #7142cc; color: white; text-decoration: none; }
+.preview-open[aria-disabled="true"] { opacity: .5; }
+.workspace-choice { display: flex; align-items: center; gap: 8px; margin: 16px 0; }
+.workspace-choice input { width: auto; }
+@media (max-width: 780px) {
+  .session-toolbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .session-toolbar button { min-height: 44px; white-space: normal; }
+  .session-list { flex-wrap: wrap; max-height: 300px; }
+  .session-row { flex: 1 1 140px; min-width: 140px; }
+  .preview-section { padding: 16px 18px; }
+  .preview-actions { width: 100%; }
+  .preview-actions > * { flex: 1; text-align: center; min-height: 44px; }
+}
 .prompt-preview {
   padding: 16px;
   min-height: 100px;

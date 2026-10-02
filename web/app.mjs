@@ -94,6 +94,8 @@ let projects = [],
   eventsTimer = null,
   epoch = 0,
   allApprovals = [];
+const drafts = new Map();
+let previewRows = [];
 const el = (tag, text, cls) => {
   const n = document.createElement(tag);
   if (text !== undefined) n.textContent = text;
@@ -225,12 +227,18 @@ async function refresh(discovery = false) {
       );
     }
     await loadSessions();
+    if (selected && !sessions.some(s => s.id === selected)) {
+      epoch++; controller?.abort(); clearTimeout(eventsTimer);
+      selected = null; snapshot = null;
+      $("#session-detail").hidden = true; $("#empty-session").hidden = false;
+    }
     renderSessions();
     allApprovals = (await client.get("/api/approvals")).approvals;
     renderAllApprovals();
     $("#host-status").textContent = "Bridge connected";
     $("#connection-state").textContent = "● Connected";
     if (selected) await updateSnapshot(selected);
+    await loadPreviews();
     if (page === "devices") await renderDevices();
     if (page === "diagnostics") await renderDiagnostics();
   } catch (e) {
@@ -292,7 +300,7 @@ function renderSessions() {
       el("small", `Process: ${human(s.process.state)}`),
       el(
         "span",
-        s.reconciliationRequired
+        s.controlClosed ? "Closed" : s.reconciliationRequired
           ? "Needs reconciliation"
           : human(s.currentTurn.state),
         `badge ${s.reconciliationRequired ? "warn" : ""}`,
@@ -306,14 +314,22 @@ async function updateSnapshot(id) {
   const data = await client.get(`/api/sessions/${id}`);
   if (id !== selected) return;
   snapshot = data;
+  if ((data.historyStartCursor ?? 0) > cursor) {
+    cursor = data.historyStartCursor;
+    resetReplies("Chat cleared. New replies will appear here.");
+    $("#activity").replaceChildren();
+  }
   renderDetail();
   return data;
 }
 async function selectSession(id) {
+  if (selected) drafts.set(selected, $("#prompt").value);
   epoch++;
   controller?.abort();
   clearTimeout(eventsTimer);
   selected = id;
+  $("#prompt").value = drafts.get(id) ?? "";
+  updatePreview();
   cursor = 0;
   snapshot = null;
   resetReplies("No replies yet. Codex’s messages will appear here as it works.");
@@ -324,8 +340,10 @@ async function selectSession(id) {
   $("#session-detail").hidden = false;
   renderSessions();
   await updateSnapshot(id);
+  cursor = snapshot?.historyStartCursor ?? 0;
   $("#activity").replaceChildren();
   stream(id, epoch).catch(failure);
+  renderPreviews();
 }
 function renderDetail() {
   if (!snapshot) return;
@@ -333,28 +351,28 @@ function renderDetail() {
   $("#replies-title").textContent = `${name(s.agent)} replies`;
   $("#detail-agent").textContent = `${name(s.agent)} / ${s.id.slice(0, 8)}`;
   $("#detail-project").textContent = s.project;
-  $("#turn-badge").textContent = human(s.currentTurn.state);
+  $("#turn-badge").textContent = s.controlClosed ? "Closed" : human(s.currentTurn.state);
   $("#state-facts").replaceChildren(
     ...[
       `Session: ${s.lifecycle}`,
       `Parent: ${s.process.state}`,
       `Queue: ${snapshot.queue.state === "unknown" ? "unknown" : snapshot.queue.count}`,
-      `Worktree: ${s.leaseHeld ? "reserved" : "not reserved"}`,
+      `Workspace: ${s.isolatedWorkspace ? "separate worktree" : s.leaseHeld ? "reserved" : "not reserved"}`,
     ].map((t) => el("span", t)),
   );
   const notes = [
-    ...(snapshot.reconciliationRequired
+    ...(snapshot.reconciliationRequired && !s.controlClosed
       ? [
           "Local reconciliation required. The bridge cannot prove this session is safe to control.",
         ]
       : []),
-    ...(snapshot.uncertainty ?? []),
+    ...(!s.controlClosed ? (snapshot.uncertainty ?? []) : []),
     ...(s.agent === "claude"
       ? ["Claude is implemented but runtime unverified."]
       : []),
     ...(s.controlClosed
       ? [
-          "Session control is closed. Closing does not stop the agent parent or release the worktree.",
+          `Session closed. Start a new session to continue working.${s.process.state !== "exited" ? " The agent could not be confirmed stopped; inspect it on your computer." : ""}`,
         ]
       : []),
   ];
@@ -365,6 +383,9 @@ function renderDetail() {
     interrupt: s.capabilities.turnInterrupt.available,
     stop: snapshot.actions.stopAgent,
     close: snapshot.actions.closeSession,
+    end: snapshot.actions.endSession,
+    delete: snapshot.actions.deleteSession,
+    clear: snapshot.actions.clearHistory,
     resume: s.capabilities.historyResume.available,
   };
   for (const b of $$("[data-control]"))
@@ -381,12 +402,14 @@ function renderDetail() {
     canWrite() &&
     !busy;
   $("#send-prompt").disabled = !allowed;
-  $("#prompt").disabled = !allowed;
+  $("#prompt").disabled = !canWrite();
   $("#composer-hint").textContent = !canWrite()
     ? "Read-only device"
     : allowed
       ? "Runs on your computer"
-      : "Unavailable in current state";
+      : s.controlClosed ? "Session closed. Your draft is kept; start a new session."
+        : s.reconciliationRequired ? "Session needs recovery. Keep drafting or start a separate session."
+        : "Keep drafting. Send becomes available when the agent is ready.";
   renderApprovals($("#approval-inline"), snapshot.approvals);
 }
 function resetReplies(message, gap = false) {
@@ -728,16 +751,18 @@ $("#prompt-form").onsubmit = async (e) => {
   e.preventDefault();
   try {
     const text = $("#prompt").value;
+    const id = selected;
     if (!text.trim()) return;
     const result = await mutate(
-      `/api/sessions/${selected}/${$("#input-mode").value}`,
+      `/api/sessions/${id}/${$("#input-mode").value}`,
       { text },
     );
-    if (result.operation?.state === "completed") { $("#prompt").value = ""; updatePreview(); }
+    if (result.operation?.state === "completed") { drafts.delete(id); if (selected === id) { $("#prompt").value = ""; updatePreview(); } }
   } catch (err) {
     failure(err);
   }
 };
+$("#clear-draft").onclick = () => { $("#prompt").value = ""; drafts.delete(selected); updatePreview(); };
 function updatePreview() {
   if (!$("#prompt-preview").hidden)
     renderMarkdown($("#prompt-preview"), $("#prompt").value || "Nothing to preview yet.");
@@ -751,7 +776,7 @@ $("#preview-prompt").onclick = () => {
   updatePreview();
   if (!preview) $("#prompt").focus();
 };
-$("#prompt").addEventListener("input", updatePreview);
+$("#prompt").addEventListener("input", () => { if (selected) drafts.set(selected, $("#prompt").value); updatePreview(); });
 const controlText = {
   interrupt: [
     "Interrupt this turn?",
@@ -765,6 +790,9 @@ const controlText = {
     "Close session control?",
     "Closes active control of this session. This does not stop the agent parent or release its worktree.",
   ],
+  end: ["Close this session?", "Stops the owned agent and closes this session. Its history stays available. Any uncertain processes keep their workspace reservation."],
+  clear: ["Clear this chat?", "Hides earlier messages and activity in this session. Your agent keeps its conversation context."],
+  delete: ["Delete this session?", "Closes the session, stops the owned agent, and removes it from your session list. Project files and native history are kept."],
   resume: [
     "Resume native history?",
     "Starts a new process from native history. This does not reconnect to an existing process. Claude runtime remains unverified.",
@@ -773,8 +801,11 @@ const controlText = {
 for (const b of $$("[data-control]"))
   b.onclick = async () => {
     try {
-      if (await confirmAction(...controlText[b.dataset.control]))
-        await mutate(`/api/sessions/${selected}/${b.dataset.control}`);
+      if (await confirmAction(...controlText[b.dataset.control])) {
+        const id = selected;
+        await mutate(`/api/sessions/${id}/${b.dataset.control}`);
+        if (b.dataset.control === "clear" && selected === id) await selectSession(id);
+      }
     } catch (e) {
       failure(e);
     }
@@ -787,7 +818,7 @@ function startHint() {
   $("#codex-settings").hidden = !isCodex;
   const a = agents.find((a) => a.agent === $("#start-agent").value);
   $("#start-hint").textContent = a
-    ? `${a.availability.ready ? "Available" : human(a.availability.state)}. ${a.agent === "claude" ? "Runtime unverified. " : ""}${a.availability.reason ?? "One writing session per worktree."}`
+    ? `${a.availability.ready ? "Available" : human(a.availability.state)}. ${a.agent === "claude" ? "Runtime unverified. " : ""}${a.availability.reason ?? "Use separate workspaces for multiple sessions in one project."}`
     : "Agent availability unknown";
   $("#start-submit").disabled =
     busy || !canWrite() || !a?.availability.ready || !projects.length || (isCodex && !$("#start-model").value);
@@ -830,12 +861,14 @@ $("#new-session").onclick = () => {
   $("#new-dialog").showModal();
 };
 $("#start-agent").onchange = startHint;
+$("#new-project-session").onclick = () => { $("#new-session").click(); if (snapshot) $("#start-project").value = snapshot.session.project; };
 $("#start-form").onsubmit = async (e) => {
   e.preventDefault();
   try {
     const result = await mutate("/api/sessions", {
       project: $("#start-project").value,
       agent: $("#start-agent").value,
+      isolated: $("#start-isolated").checked,
       ...($("#start-agent").value === "codex" ? {
         model: $("#start-model").value,
         reasoningEffort: $("#start-effort").value,
@@ -851,6 +884,43 @@ $("#start-form").onsubmit = async (e) => {
     failure(err);
   }
 };
+async function loadPreviews() {
+  try { const data = await client.get("/api/previews"); previewRows = data.previews; renderPreviews(); }
+  catch (e) { if (e.status !== 404) throw e; }
+}
+function renderPreviews() {
+  const root = $("#preview-list"); root.replaceChildren();
+  const rows = previewRows.filter(r => r.sessionId === selected);
+  if (!rows.length) root.append(el("p", "Development servers will appear here when your agent reports them.", "muted"));
+  for (const r of rows) {
+    const card = el("article", undefined, "preview-card"), info = el("div"), actions = el("div", undefined, "preview-actions");
+    info.append(el("strong", r.state === "candidate" ? "Development server detected" : r.state === "running" ? "● Running" : "○ Connecting preview"), el("p", r.label));
+    if (r.state === "candidate") {
+      const approve = el("button", "Enable Preview"); approve.disabled = busy || !canWrite();
+      approve.onclick = async () => {
+        try {
+          if (await confirmAction("Enable this preview?", `Allow your signed-in account to open ${r.label} from this session remotely?`)) {
+            await client.get(`/api/previews/${r.id}/approve`, { method: "POST", headers: { "Content-Type": "application/json", "X-CSRF-Token": client.csrf }, body: "{}" });
+            await loadPreviews();
+          }
+        } catch (e) { failure(e); }
+      };
+      actions.append(approve);
+    } else {
+      const open = el("a", "Open Preview", "preview-open");
+      if (r.state === "running" && r.previewId) { open.href = `/p/${r.previewId}`; open.target = "_blank"; open.rel = "noopener noreferrer"; }
+      else { open.setAttribute("aria-disabled", "true"); info.append(el("small", "Waiting for preview hosting. Refresh in a moment.")); }
+      actions.append(open);
+    }
+    const disable = el("button", "Disable Preview"); disable.disabled = busy || !canWrite();
+    disable.onclick = async () => {
+      try { await client.get(`/api/previews/${r.id}/disable`, { method: "POST", headers: { "Content-Type": "application/json", "X-CSRF-Token": client.csrf }, body: "{}" }); await loadPreviews(); }
+      catch (e) { failure(e); }
+    };
+    actions.append(disable); card.append(info, actions); root.append(card);
+  }
+}
+$("#refresh-previews").onclick = () => loadPreviews().catch(failure);
 for (const b of $$("[data-dismiss]"))
   b.onclick = () => b.closest("dialog").close();
 async function renderDevices() {

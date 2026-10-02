@@ -233,12 +233,19 @@
                   <div class="session-toolbar">
                     <button data-control="interrupt">Interrupt turn</button
                     ><button data-control="stop">Stop agent</button
-                    ><button data-control="close">Close session</button
+                    ><button data-control="end">Close session</button
+                    ><button data-control="clear">Clear chat</button
+                    ><button data-control="delete">Delete session</button
+                    ><button id="new-project-session">New session</button
                     ><button data-control="resume">Resume history</button
                     ><button id="toggle-inspector">Details ↗</button>
                   </div>
                   <div id="inspector" class="inspector" hidden></div>
                   <div id="approval-inline"></div>
+                  <section id="remote-preview" class="preview-section" aria-labelledby="remote-preview-title">
+                    <div class="preview-heading"><h3 id="remote-preview-title">Preview</h3><button id="refresh-previews" type="button">Refresh</button></div>
+                    <div id="preview-list"><p class="muted">Development servers will appear here when your agent reports them.</p></div>
+                  </section>
                   <section
                     aria-labelledby="replies-title"
                     class="replies-section"
@@ -271,6 +278,7 @@
                   <form id="prompt-form" class="composer">
                     <div class="composer-tools">
                       <span>Markdown supported</span
+                      ><button type="button" id="clear-draft">Clear draft</button
                       ><button
                         type="button"
                         id="preview-prompt"
@@ -414,6 +422,8 @@
             your signed-in account.
           </p>
         </div>
+        <label class="workspace-choice"><input id="start-isolated" type="checkbox" checked> Use a separate workspace for this session</label>
+        <p class="muted">Git projects start from the latest commit in a separate worktree. Uncommitted changes stay in the original folder. Non-Git folders support one active workspace.</p>
         <div id="start-hint" class="notice"></div>
         <button class="primary" id="start-submit">
           Start on your computer ↗

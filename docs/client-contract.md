@@ -48,10 +48,15 @@ Approvals bind `approvalId`, generation, session and native turn. Only offered d
 | interrupt | Request turn interruption; descendants may survive |
 | stop | Stop the owned parent; reservation remains |
 | close | Disable session control; does not stop parent or release reservation |
+| end | Dashboard Close: disable control and attempt owned-parent shutdown |
+| clear | Hide earlier chat/activity using a retained-event cursor; keep native context |
+| delete | End and archive the dashboard session; keep files, native history, audit, and reservations |
 | resume | Start a new process from supported native history; not process reattachment |
 | release worktree | Audited offline Mac action only; never exposed here |
 
 The UI never silently changes input modes. Claude runtime remains unverified; Codex retains historical Phase 2 runtime evidence. This contract does not claim new native-agent verification.
+
+`POST /api/sessions` also accepts `isolated: true`. Git projects receive a separate detached worktree from committed HEAD, allowing multiple sessions for one project while preserving one writer per worktree. Existing dirty changes stay in the original folder. Archived sessions are omitted from the dashboard list. Snapshots expose `historyStartCursor` after clearing chat. The composer remains editable while sending is unavailable. See [Remote Preview](remote-preview.md) for candidate approval and the separate owner-authorized preview transport.
 
 ## Trust boundary and limitations
 
