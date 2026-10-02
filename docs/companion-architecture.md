@@ -32,7 +32,7 @@ PM_RELAY_ORIGIN=https://relay.example.com \
 npm run companion:package
 ```
 
-Railway uses `DASHBOARD_ORIGIN` and a persistent volume mounted at `/data`; the service stores its account database there. It does not receive a host enrollment token. Vercel uses the same `DASHBOARD_ORIGIN` build value and `RELAY_PUBLIC_URL`. Production deployments must be HTTPS/WSS, one Railway replica, and a signed/notarized companion release. Local packaging disables notarization until release signing credentials are supplied.
+Railway uses `DASHBOARD_ORIGIN` and a persistent volume mounted at `/data`; set `RELAY_DATA_DIR=/data` (or let updated builds detect `RAILWAY_VOLUME_MOUNT_PATH`). The directory must be writable: Railway documents `RAILWAY_RUN_UID=0` for non-root images accessing its root-owned volumes. The service stores its account database there. It does not receive a host enrollment token. Vercel uses the same `DASHBOARD_ORIGIN` build value and `RELAY_PUBLIC_URL`. Production deployments must be HTTPS/WSS, one Railway replica, and a signed/notarized companion release. Local packaging disables notarization until release signing credentials are supplied.
 
 ## Security boundaries
 

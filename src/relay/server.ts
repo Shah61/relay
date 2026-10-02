@@ -204,9 +204,9 @@ if (
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
   const origin = process.env.DASHBOARD_ORIGIN ?? "";
-  const dir = process.env.RELAY_DATA_DIR;
+  const dir = process.env.RELAY_DATA_DIR || process.env.RAILWAY_VOLUME_MOUNT_PATH;
   if (!dir)
-    throw Error("RELAY_DATA_DIR must point to a persistent Railway volume");
+    throw Error("Attach a persistent Railway volume (for example /data), or set RELAY_DATA_DIR to your persistent storage directory. Railway volume mount paths are detected automatically.");
   mkdirSync(dir, { recursive: true, mode: 0o700 });
   const accounts = new Accounts(join(dir, "accounts.sqlite"), origin);
   const relay = createRelay(accounts, [origin]);
