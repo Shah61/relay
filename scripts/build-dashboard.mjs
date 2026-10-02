@@ -5,8 +5,9 @@ import {
   copyFileSync,
   cpSync,
 } from "node:fs";
+import { dashboardOrigin as resolveDashboardOrigin } from "../lib/dashboard-origin.mjs";
 const url = new URL(process.env.RELAY_PUBLIC_URL ?? "");
-const dashboardOrigin = process.env.DASHBOARD_ORIGIN ?? "";
+const dashboardOrigin = resolveDashboardOrigin();
 if (
   url.protocol !== "wss:" ||
   url.username ||
@@ -16,8 +17,6 @@ if (
   url.pathname !== "/"
 )
   throw Error("Set RELAY_PUBLIC_URL to the exact wss:// Railway origin");
-if (!/^https:\/\/[^/]+$/.test(dashboardOrigin))
-  throw Error("Set DASHBOARD_ORIGIN to the exact Vercel HTTPS origin");
 mkdirSync("dist-web", { recursive: true });
 for (const name of [
   "app.mjs",
@@ -51,5 +50,5 @@ cpSync("node_modules/@simplewebauthn/browser/esm", "dist-web/vendor/webauthn", {
   recursive: true,
 });
 console.log(
-  "Built static dashboard with a single allowed relay origin. No credentials included.",
+  `Built static dashboard for ${dashboardOrigin} with a single allowed relay origin. No credentials included.`,
 );

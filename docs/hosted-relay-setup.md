@@ -14,7 +14,7 @@ This is the current setup path. It replaces the earlier Tailscale plan. The phon
 ## 2. Deploy the dashboard on Vercel (once)
 
 1. Import the same dedicated repository. Use the repository root and framework **Other**. The included `vercel.json` builds with `node scripts/build-dashboard.mjs` and publishes only `dist-web`.
-2. Set `RELAY_PUBLIC_URL` to `wss://YOUR-RAILWAY-DOMAIN` and `DASHBOARD_ORIGIN` to the exact Vercel production origin, then deploy. These are product release settings, not user settings. **Never add a host credential or agent token to Vercel.**
+2. Set `RELAY_PUBLIC_URL` to `wss://YOUR-RAILWAY-DOMAIN`, then deploy. Vercel's build and account API derive the dashboard origin from `VERCEL_PROJECT_PRODUCTION_URL`, falling back to `VERCEL_URL`, with `https://` prefixed. An explicit `DASHBOARD_ORIGIN` overrides both for a custom domain or local build; it is not required for the first Vercel deployment. These are product release settings, not user settings. **Never add a host credential or agent token to Vercel.**
 3. Confirm the final production origin matches Railway's `DASHBOARD_ORIGIN`. If either address changes, update the deployment settings and rebuild the companion release. The dashboard's security policy allows WebSocket traffic only to the configured relay origin.
 4. Make the production dashboard reachable on the phone without a Vercel team sign-in. It intentionally serves a public, unauthenticated shell; access to a computer still requires QR pairing. Preview deployments are not authorized unless their exact origins are explicitly configured.
 
