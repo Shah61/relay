@@ -1,0 +1,74 @@
+
+> test
+> node --experimental-strip-types --test tests/*.test.ts
+
+TAP version 13
+# Subtest: allowlist, early thread notification, persistence and monotonic sequence
+ok 1 - allowlist, early thread notification, persistence and monotonic sequence
+  ---
+  duration_ms: 4.498917
+  type: 'test'
+  ...
+# Subtest: approval native id zero, generation check, offered decision and duplicate protection
+ok 2 - approval native id zero, generation check, offered decision and duplicate protection
+  ---
+  duration_ms: 3.119083
+  type: 'test'
+  ...
+# Subtest: interrupt receipt does not mean interrupted; terminal event expires approval
+ok 3 - interrupt receipt does not mean interrupted; terminal event expires approval
+  ---
+  duration_ms: 2.335167
+  type: 'test'
+  ...
+# Subtest: steer completion race never creates a replacement turn
+ok 4 - steer completion race never creates a replacement turn
+  ---
+  duration_ms: 0.912958
+  type: 'test'
+  ...
+# Subtest: concurrent prompts cannot start two turns
+ok 5 - concurrent prompts cannot start two turns
+  ---
+  duration_ms: 1.36775
+  type: 'test'
+  ...
+# Subtest: disconnect retains last active turn and refuses control
+ok 6 - disconnect retains last active turn and refuses control
+  ---
+  duration_ms: 1.657292
+  type: 'test'
+  ...
+# Subtest: normalization preserves uncertainty and native failure
+ok 7 - normalization preserves uncertainty and native failure
+  ---
+  duration_ms: 0.054542
+  type: 'test'
+  ...
+# Subtest: RPC response correlation handles out-of-order replies and errors
+ok 8 - RPC response correlation handles out-of-order replies and errors
+  ---
+  duration_ms: 0.218542
+  type: 'test'
+  ...
+# Subtest: late terminal notification cannot clear a newer turn
+ok 9 - late terminal notification cannot clear a newer turn
+  ---
+  duration_ms: 1.730042
+  type: 'test'
+  ...
+# Subtest: uncertain turn delivery blocks blind prompt retry
+ok 10 - uncertain turn delivery blocks blind prompt retry
+  ---
+  duration_ms: 2.177167
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 123.662667

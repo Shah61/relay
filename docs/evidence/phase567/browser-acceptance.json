@@ -1,0 +1,31 @@
+{
+  "environment": "isolated fake-agent HTTP server on 127.0.0.1:47833; no inference",
+  "desktopViewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "mobileViewport": {
+    "width": 390,
+    "height": 844,
+    "documentWidth": 390
+  },
+  "passed": [
+    "one-time pairing",
+    "session creation",
+    "prompt submission",
+    "live SSE activity",
+    "literal HTML injection payload (zero activity images)",
+    "approval confirmation and resolution",
+    "cookie authentication after reload",
+    "device management read",
+    "stop parent retains lease and uncertainty",
+    "close control retains lease",
+    "responsive mobile navigation",
+    "hidden mobile navigation inert",
+    "purple desktop and mobile rendering"
+  ],
+  "phoneNetworkTest": "deferred_by_user",
+  "productionEndpoint": "http://127.0.0.1:47832",
+  "productionPairedDevices": 0,
+  "testHarness": "stopped and disposable database removed"
+}

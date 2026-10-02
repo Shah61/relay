@@ -1,0 +1,17 @@
+diff --git a/math.cjs b/math.cjs
+index 724d5f5..4f314ef 100644
+--- a/math.cjs
++++ b/math.cjs
+@@ -1 +1 @@
+-exports.double = n => n;
++exports.double = n => n * 2;
+diff --git a/math.test.cjs b/math.test.cjs
+index a18e40a..b653b9d 100644
+--- a/math.test.cjs
++++ b/math.test.cjs
+@@ -2,3 +2,5 @@ const test = require('node:test');
+ const assert = require('node:assert/strict');
+ const { double } = require('./math.cjs');
+ test('baseline', () => assert.equal(double(0), 0));
++test('doubles positive numbers', () => assert.equal(double(3), 6));
++test('doubles negative numbers', () => assert.equal(double(-2), -4));

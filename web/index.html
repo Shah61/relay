@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#7046d3" />
+    <title>Relay · Your computer, within reach</title>
+    <link rel="icon" href="/icon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/app.mjs"></script>
+  </head>
+  <body>
+    <div id="login" class="pair-screen">
+      <section class="pair-story">
+        <a class="brand" href="/"
+          ><img src="/icon.svg" alt="" />relay<span
+            >LOCAL AGENT WORKSPACE</span
+          ></a
+        >
+        <div>
+          <p class="eyebrow">YOUR WORK RUNS ON YOUR COMPUTER</p>
+          <h1>A little distance.<br />Same workspace.</h1>
+          <p>
+            Follow your agents, review their work, and make the next move—from
+            your desk or your phone.
+          </p>
+          <div class="connection-art" aria-hidden="true">
+            <div class="art-node">YOUR DEVICE</div>
+            <span>··········</span>
+            <div class="art-relay">↗</div>
+            <span>··········</span>
+            <div class="art-node">YOUR COMPUTER</div>
+          </div>
+        </div>
+        <span class="story-footer"
+          >Private connection. Explicit permissions. Your call.</span
+        >
+      </section>
+      <section class="pair-form-wrap">
+        <div class="pair-card">
+          <span class="chip" id="welcome-chip">YOUR WORKSPACE, ANYWHERE</span>
+          <h2 id="welcome-title">Start on your computer.</h2>
+          <p id="welcome-description">
+            Open Relay on this computer. Then scan its QR code to connect your
+            phone.
+          </p>
+          <div id="local-launch" class="launch-guide">
+            <div class="launch-step">
+              <span>1</span>
+              <div>
+                <strong>Open the Relay launcher</strong>
+                <p>
+                  Double-click Start Relay.command on Mac or Start Relay.cmd on
+                  Windows. It opens your dashboard automatically.
+                </p>
+              </div>
+            </div>
+            <div class="launch-step">
+              <span>2</span>
+              <div>
+                <strong>Connect your phone with a QR</strong>
+                <p>
+                  In the dashboard, choose Connect phone. Scan the code with
+                  your phone camera—no code to type.
+                </p>
+              </div>
+            </div>
+            <p class="muted">
+              Prefer a terminal? Run <code>npm start</code> in the Relay folder.
+            </p>
+            <button type="button" class="primary" id="copy-launch">
+              Copy launch command <span>↗</span>
+            </button>
+            <p id="launch-feedback" role="status"></p>
+          </div>
+          <button
+            type="button"
+            id="manual-pair-toggle"
+            class="manual-pair-toggle"
+            aria-expanded="false"
+            aria-controls="pair-form"
+          >
+            Advanced: enter a local pairing code
+          </button>
+          <form id="pair-form" hidden>
+            <label for="device-name">Device name</label
+            ><input
+              id="device-name"
+              name="name"
+              maxlength="80"
+              placeholder="My iPhone"
+              autocomplete="off"
+              required
+            /><label for="pair-code">Pairing code</label
+            ><input
+              id="pair-code"
+              name="code"
+              maxlength="32"
+              minlength="32"
+              placeholder="Paste your one-time code"
+              autocomplete="off"
+              spellcheck="false"
+              required
+            /><button class="primary" type="submit">
+              Connect this device <span>↗</span>
+            </button>
+          </form>
+          <p id="pair-error" class="error" role="alert"></p>
+          <details class="local-help" hidden>
+            <summary>How do I connect?</summary>
+            <p>On your computer, open the Relay launcher or run:</p>
+            <code>npm start</code>
+            <p>
+              This opens and pairs the local dashboard automatically. Then
+              choose Connect phone and scan its QR code with your phone. No
+              pairing command is needed on your phone.
+            </p>
+            <p>
+              Manual fallback only:
+              <code>npm run pair -- create owner</code> creates a code for this
+              local browser. It expires after 10 minutes.
+            </p>
+          </details>
+        </div>
+        <p class="pair-foot">RELAY / A PRIVATE WINDOW INTO YOUR WORKSPACE</p>
+      </section>
+    </div>
+    <div id="workspace" class="workspace" hidden>
+      <aside class="sidebar">
+        <a class="brand" href="/"><img src="/icon.svg" alt="" />relay</a>
+        <div class="host-card">
+          <span class="host-icon">⌘</span>
+          <div>
+            <strong>Your computer</strong
+            ><span id="host-status">Connecting…</span>
+          </div>
+          <i id="host-dot" class="dot"></i>
+        </div>
+        <p class="nav-label">WORKSPACE</p>
+        <nav aria-label="Main navigation">
+          <button data-page="sessions" class="nav-item active">
+            <span>▤</span>Sessions<i id="session-count">0</i></button
+          ><button data-page="approvals" class="nav-item">
+            <span>◇</span>Approvals<i id="approval-count">0</i></button
+          ><button data-page="devices" class="nav-item">
+            <span>▣</span>Devices</button
+          ><button data-page="remote" class="nav-item">
+            <span>↗</span>Connect phone</button
+          ><button data-page="diagnostics" class="nav-item">
+            <span>≋</span>Diagnostics
+          </button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="private-label">
+            <i class="dot"></i
+            ><span id="transport-label">Local connection</span>
+          </div>
+          <button id="logout" class="device-button">
+            <span id="device-label">This device</span><small>Sign out ↗</small>
+          </button>
+        </div>
+      </aside>
+      <div class="main-shell">
+        <header class="topbar">
+          <button
+            id="menu-toggle"
+            class="icon-button"
+            aria-label="Toggle navigation"
+          >
+            ☰
+          </button>
+          <div class="breadcrumb">
+            Workspace <span>/</span> <strong id="page-name">Sessions</strong>
+          </div>
+          <div class="top-right">
+            <span id="connection-state" class="connection"
+              ><i class="dot"></i>Connecting</span
+            ><button id="refresh" class="icon-button" aria-label="Refresh">
+              ↻
+            </button>
+          </div>
+        </header>
+        <main id="main" tabindex="-1">
+          <section class="page-intro">
+            <div>
+              <p class="eyebrow">LOCAL EXECUTION. A CLEAR VIEW.</p>
+              <h1 id="page-title">Your workspace, in motion.</h1>
+              <p id="page-subtitle">
+                A live view of your agents. You stay in control.
+              </p>
+            </div>
+            <button id="new-session" class="primary">＋ New session</button>
+          </section>
+          <div id="global-message" class="notice" hidden role="status"></div>
+          <section
+            id="pending-operations"
+            class="notice amber"
+            hidden
+          ></section>
+          <section id="sessions-page">
+            <div id="agent-strip" class="agent-strip"></div>
+            <div class="sessions-layout">
+              <section class="session-column">
+                <div class="section-heading">
+                  <h2>Sessions</h2>
+                  <span id="session-total">0 total</span>
+                </div>
+                <div id="session-list" class="session-list"></div>
+              </section>
+              <section class="conversation">
+                <div id="empty-session" class="empty-state">
+                  <span class="empty-symbol">↗</span>
+                  <h2>A place for your next move.</h2>
+                  <p>
+                    Select a session to follow its activity, or start one in an
+                    approved project.
+                  </p>
+                </div>
+                <div id="session-detail" hidden>
+                  <div class="detail-header">
+                    <div>
+                      <span id="detail-agent" class="eyebrow"></span>
+                      <h2 id="detail-project"></h2>
+                    </div>
+                    <span id="turn-badge" class="badge"></span>
+                  </div>
+                  <div id="session-notice" class="notice amber" hidden></div>
+                  <div id="state-facts" class="state-facts"></div>
+                  <div class="session-toolbar">
+                    <button data-control="interrupt">Interrupt turn</button
+                    ><button data-control="stop">Stop agent</button
+                    ><button data-control="close">Close session</button
+                    ><button data-control="resume">Resume history</button
+                    ><button id="toggle-inspector">Details ↗</button>
+                  </div>
+                  <div id="inspector" class="inspector" hidden></div>
+                  <div id="approval-inline"></div>
+                  <div class="activity-title">
+                    <h3>Activity</h3>
+                    <span id="stream-label">Connecting…</span>
+                  </div>
+                  <div id="activity" class="activity" aria-live="polite"></div>
+                  <form id="prompt-form" class="composer">
+                    <label class="sr-only" for="prompt">Message to agent</label
+                    ><textarea
+                      id="prompt"
+                      placeholder="What would you like to work on?"
+                      maxlength="16000"
+                      rows="3"
+                    ></textarea>
+                    <div class="composer-footer">
+                      <select id="input-mode" aria-label="Input mode">
+                        <option value="prompt">Follow-up</option>
+                        <option value="queue">Queue input</option>
+                        <option value="steer">Steer active turn</option></select
+                      ><span id="composer-hint">Runs on your computer</span
+                      ><button id="send-prompt" type="submit" class="primary">
+                        Send ↗
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </section>
+            </div>
+          </section>
+          <section id="approvals-page" hidden>
+            <div id="all-approvals"></div>
+          </section>
+          <section id="devices-page" hidden>
+            <div id="devices-list" class="cards"></div>
+            <div class="notice">
+              Pair a new device using a one-time code from the computer.
+              Revoking a device also disconnects its live event streams.
+            </div>
+          </section>
+          <section id="remote-page" hidden>
+            <div class="remote-card">
+              <span class="chip">YOUR COMPUTER · ANYWHERE</span>
+              <h2>Your workspace travels with you.</h2>
+              <p>
+                Scan once. Continue from your phone, wherever you are. Your
+                computer runs the agents; your own relay carries encrypted
+                traffic.
+              </p>
+              <div id="remote-status"></div>
+              <div id="host-setup" hidden>
+                <p id="host-state" class="notice">Checking connection…</p>
+                <details>
+                  <summary>One-time relay settings</summary>
+                  <form id="host-configure" class="host-form">
+                    <label for="host-hostName">Computer name</label
+                    ><input
+                      id="host-hostName"
+                      placeholder="My MacBook or Windows PC"
+                      maxlength="80"
+                      required
+                    />
+                    <label for="host-relayUrl">Railway relay address</label
+                    ><input
+                      id="host-relayUrl"
+                      placeholder="wss://your-relay.up.railway.app"
+                      required
+                    />
+                    <label for="host-frontendUrl"
+                      >Vercel dashboard address</label
+                    ><input
+                      id="host-frontendUrl"
+                      placeholder="https://your-relay.vercel.app"
+                      required
+                    />
+                    <label for="host-hostToken">Host enrollment token</label
+                    ><input
+                      id="host-hostToken"
+                      type="password"
+                      autocomplete="new-password"
+                      minlength="32"
+                      maxlength="256"
+                      required
+                    />
+                    <button type="submit" class="primary">
+                      Save &amp; connect
+                    </button>
+                  </form>
+                </details>
+                <div class="phone-pair-actions">
+                  <label for="phone-role">Phone access</label>
+                  <select id="phone-role">
+                    <option value="operator">
+                      Send prompts &amp; approve actions
+                    </option>
+                    <option value="viewer">View only</option>
+                  </select>
+                  <p class="muted">
+                    Access includes all projects visible to this local owner.
+                  </p>
+                  <button id="create-qr" class="primary" disabled>
+                    Create phone QR code ↗
+                  </button>
+                </div>
+                <div id="phone-qr-wrap" hidden>
+                  <img
+                    id="phone-qr"
+                    alt="One-time phone pairing QR code"
+                    width="360"
+                    height="360"
+                  />
+                  <p>
+                    <a id="phone-pair-link" referrerpolicy="no-referrer"
+                      >Open pairing page</a
+                    >
+                  </p>
+                  <p id="qr-expiry"></p>
+                  <button id="cancel-qr">Cancel code</button>
+                </div>
+              </div>
+              <p class="muted">
+                Keep your computer awake and Relay running. Your phone needs
+                only a browser—no VPN or extra app. Manage paired browsers under
+                Devices.
+              </p>
+            </div>
+          </section>
+          <section id="diagnostics-page" hidden>
+            <div id="diagnostics-content"></div>
+          </section>
+        </main>
+        <footer class="main-footer">
+          <span><i class="dot"></i> Local agents. Durable state.</span
+          ><span>Relay · v0.7</span>
+        </footer>
+      </div>
+    </div>
+    <dialog id="new-dialog">
+      <form id="start-form">
+        <div class="dialog-heading">
+          <h2>Start a session</h2>
+          <button
+            type="button"
+            data-dismiss
+            class="icon-button"
+            aria-label="Close dialog"
+          >
+            ×
+          </button>
+        </div>
+        <p>Choose an agent and a locally approved project.</p>
+        <label for="start-project">Project</label
+        ><select id="start-project" required></select
+        ><label for="start-agent">Agent</label
+        ><select id="start-agent">
+          <option value="codex">Codex</option>
+          <option value="claude">Claude Code</option>
+        </select>
+        <div id="start-hint" class="notice"></div>
+        <button class="primary" id="start-submit">
+          Start on your computer ↗
+        </button>
+      </form>
+    </dialog>
+    <dialog id="confirm-dialog">
+      <form method="dialog">
+        <div class="dialog-heading">
+          <h2 id="confirm-title"></h2>
+          <button class="icon-button" value="cancel" aria-label="Close dialog">
+            ×
+          </button>
+        </div>
+        <p id="confirm-text"></p>
+        <div class="dialog-actions">
+          <button value="cancel">Cancel</button
+          ><button id="confirm-yes" class="primary" value="confirm">
+            Continue
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <div id="toast" class="toast" role="status" hidden></div>
+  </body>
+</html>

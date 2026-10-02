@@ -1,0 +1,19 @@
+{
+  "health": {
+    "version": "0.7.0",
+    "schemaVersion": 3,
+    "status": "ok",
+    "uptimeMs": 24621
+  },
+  "dashboard": {
+    "application": "Relay",
+    "contractVersion": 1,
+    "secure": false
+  },
+  "leaseMembers": 2,
+  "leases": 1,
+  "browserDevices": 0,
+  "remote": "deferred_by_user; not installed or enabled",
+  "inferencePerformed": false,
+  "persistentServiceInstalled": false
+}

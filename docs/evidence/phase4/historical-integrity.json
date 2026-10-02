@@ -1,0 +1,22 @@
+{
+  "docs/evidence/fixture-tests.tap": "1bcd39424d5dd151e668f1e245a6b458fa64e70013cc0351fa211451cdd3b83f",
+  "docs/evidence/latest-run.json": "41b04b7cd034e95a6d1a7313b69ff59a4d17d74d497b39d70c3c0a76080c5fe1",
+  "docs/evidence/interrupt-supplemental.json": "519b899b236d622158ed66acb76a37b0997700b2b20610906fe016672fe49b25",
+  "docs/evidence/latest-events.jsonl": "677dc518cc9818fa1dffa99b9e045531efdbe9dbd317484d00ee7c17978cf0d0",
+  "docs/evidence/security.json": "bddb449fdaf58923bfb34eaa6352143a48c6cc08b259fb23ec6b5ec7a6896352",
+  "docs/evidence/interrupt-start-race.json": "7ba836f572af48a939e16259997cabd328dcd36f46ed445fa2c621a8315cac1d",
+  "docs/evidence/unit-tests.tap": "63491a2773ec27cc19489b457d1d76d4880bc146b8743fe4ee207cd21a159bad",
+  "docs/evidence/approval-replay.json": "c0eac95ec63b08e4d503aa1d3f7039cd33513e716cb08bde48bf78486df41c77",
+  "docs/evidence/fixture.diff": "35d1bef548b556e351e9c66c8bdb8af1302bd0fe23c5eab433d7c5e5aab7f0c3",
+  "docs/evidence/initial-run/results.json": "f2ecdfe6981a9d8d7db9f3107e3bdefda053074dc994aeb992234b9308f00da3",
+  "docs/evidence/initial-run/events.jsonl": "10834ce55ab53442e3b799508dc97e62cb0e779e1e73b988ecfc7fec200db8b7",
+  "docs/evidence/initial-run/fixture.diff": "ad7ed16729b8603274959a122c94a002608b7b5de29493c35629f813d471b22f",
+  "docs/evidence/phase3/security.json": "64ba891798360105c69541b0fefeb72301db0ccf5f965f59d46e3ccef28de771",
+  "docs/evidence/phase3/availability.json": "352c93fd3995ed1d25f7e7408488f0c7cc7ac85b314e25b00f72d45753e43101",
+  "docs/evidence/phase3/unit-tests.tap": "9b3a94282cd1e01ea16b8850ae0be8866c58d592247b36c2b3204a7d2ce143cb",
+  "docs/evidence/phase3/typecheck.txt": "8fe4571ad4e1c8d99b7bc7e6576a20f57e5d161cc24c4d631421068c0431e2c1",
+  "docs/evidence/review-timeout/results.json": "3a7d65fb3b4a290381eb349d74ae2a6e3929d90e9c508bc0f4a1e32e49a206ca",
+  "docs/phase-1-investigation.md": "af5248212eb4359bff2a0893b09a8372554f7fd0478dd00dbd7e49911de1193d",
+  "docs/phase-2-results.md": "7f21e23e7906efaacc1b116c59718fb12819630e42d82caea21cc2edc5887719",
+  "docs/phase-3-results.md": "994d31a5babcaf5ab98b2eb50f536ee6c44d465819711205eab6665ff3d1d0ba"
+}

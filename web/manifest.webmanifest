@@ -1,0 +1,17 @@
+{
+  "name": "Relay — your local agents",
+  "short_name": "Relay",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8f7fc",
+  "theme_color": "#7046d3",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

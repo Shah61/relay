@@ -1,0 +1,125 @@
+{
+  "checkedAt": "2026-10-02T04:34:55.293Z",
+  "inferenceAttempted": false,
+  "agent": "claude",
+  "availability": {
+    "agent": "claude",
+    "adapterInstalled": true,
+    "sdkAvailable": true,
+    "executableAvailable": true,
+    "authentication": "unauthenticated",
+    "state": "authentication_required",
+    "ready": false,
+    "sdkVersion": "0.3.286",
+    "executable": "/Users/mukhtarshah/Library/Application Support/Claude/claude-code/2.1.284/claude.app/Contents/MacOS/claude",
+    "executableSource": "desktop_managed",
+    "version": "2.1.284 (Claude Code)",
+    "reason": "Claude Code is installed but official subscription authentication is required"
+  },
+  "capabilities": {
+    "followup": {
+      "supported": true,
+      "implemented": true,
+      "verification": "unverified",
+      "available": false,
+      "mechanism": "same long-lived SDK query with streaming input",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "queuedInput": {
+      "supported": true,
+      "implemented": true,
+      "verification": "unverified",
+      "available": false,
+      "mechanism": "bridge FIFO; delivers the next input only after a native result",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "activeSteering": {
+      "supported": false,
+      "implemented": false,
+      "verification": "unsupported",
+      "available": false,
+      "mechanism": "Not offered by this adapter; do not substitute another operation",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "turnInterrupt": {
+      "supported": true,
+      "implemented": true,
+      "verification": "unverified",
+      "available": false,
+      "mechanism": "Query.interrupt(); receipt is not terminal evidence",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "processShutdown": {
+      "supported": true,
+      "implemented": true,
+      "verification": "unverified",
+      "available": false,
+      "mechanism": "Query.close() + observed local child exit",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "processTermination": {
+      "supported": null,
+      "implemented": false,
+      "verification": "unknown",
+      "available": false,
+      "mechanism": "No guarantee that every shell descendant has terminated",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "approval": {
+      "supported": true,
+      "implemented": true,
+      "verification": "unverified",
+      "available": false,
+      "mechanism": "canUseTool callback allow/deny",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "approvalCancel": {
+      "supported": true,
+      "implemented": true,
+      "verification": "unverified",
+      "available": false,
+      "mechanism": "canUseTool deny with interrupt:true",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "userInput": {
+      "supported": true,
+      "implemented": true,
+      "verification": "unverified",
+      "available": false,
+      "mechanism": "AskUserQuestion callback updatedInput.answers",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "historyResume": {
+      "supported": true,
+      "implemented": true,
+      "verification": "unverified",
+      "available": false,
+      "mechanism": "query options.resume with persisted explicit session ID",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "processReconnect": {
+      "supported": false,
+      "implemented": false,
+      "verification": "unsupported",
+      "available": false,
+      "mechanism": "Cannot attach this adapter to an arbitrary existing process",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "streaming": {
+      "supported": true,
+      "implemented": true,
+      "verification": "unverified",
+      "available": false,
+      "mechanism": "SDKMessage async iterator; includePartialMessages",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    },
+    "fileChanges": {
+      "supported": true,
+      "implemented": true,
+      "verification": "unverified",
+      "available": false,
+      "mechanism": "successful Edit/Write tool result; tool-scoped, not complete filesystem audit",
+      "source": "https://code.claude.com/docs/en/agent-sdk/overview"
+    }
+  }
+}

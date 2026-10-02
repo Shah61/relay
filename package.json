@@ -1,0 +1,40 @@
+{
+  "name": "local-agent-bridge-poc",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-strip-types scripts/start.ts",
+    "relay": "node --experimental-strip-types src/relay/server.ts",
+    "build:dashboard": "node scripts/build-dashboard.mjs",
+    "build": "tsc",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "bridge": "node --experimental-strip-types src/bridge/server.ts",
+    "client": "node --experimental-strip-types src/client.ts",
+    "integration": "node --experimental-strip-types scripts/integration.ts",
+    "test:claude-live": "node --experimental-strip-types scripts/claude-live.ts",
+    "test:claude-preflight": "node --experimental-strip-types scripts/claude-live.ts --preflight",
+    "test:security": "node --experimental-strip-types scripts/check-security.ts",
+    "release-lease": "node --experimental-strip-types scripts/release-lease.ts",
+    "test:failure": "node --experimental-strip-types --test tests/failure.integration.ts",
+    "service:prepare": "node --experimental-strip-types scripts/prepare-service.ts",
+    "pair": "node --experimental-strip-types scripts/pair-device.ts",
+    "remote:status": "node --experimental-strip-types scripts/remote.ts status",
+    "remote:configure": "node --experimental-strip-types scripts/remote.ts configure",
+    "remote:enable": "node --experimental-strip-types scripts/remote.ts enable",
+    "remote:disable": "node --experimental-strip-types scripts/remote.ts disable",
+    "test:client": "node --test tests/browser-client.test.mjs",
+    "test:dashboard": "node --experimental-strip-types tests/fixtures/dashboard-server.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/qrcode": "^1.5.6",
+    "@types/ws": "^8.18.2",
+    "prettier": "^3.9.9",
+    "typescript": "^5.9.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "0.3.286",
+    "qrcode": "^1.5.4",
+    "ws": "^8.22.0"
+  }
+}

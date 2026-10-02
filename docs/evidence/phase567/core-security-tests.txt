@@ -1,0 +1,5 @@
+
+> test:security
+> node --experimental-strip-types scripts/check-security.ts
+
+22 security checks passed

@@ -1,0 +1,34 @@
+[
+  {
+    "name": "authentication required",
+    "status": 401
+  },
+  {
+    "name": "bad token refused",
+    "status": 401
+  },
+  {
+    "name": "browser origin refused",
+    "status": 403
+  },
+  {
+    "name": "arbitrary filesystem path refused",
+    "status": 409
+  },
+  {
+    "name": "prototype property is not a project",
+    "status": 409
+  },
+  {
+    "name": "executable/flags not accepted",
+    "status": 409
+  },
+  {
+    "name": "arbitrary native RPC unavailable",
+    "status": 404
+  },
+  {
+    "name": "unauthorized event stream refused",
+    "status": 401
+  }
+]

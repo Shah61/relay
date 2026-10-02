@@ -1,0 +1,90 @@
+[
+  {
+    "name": "authentication required",
+    "status": 401
+  },
+  {
+    "name": "bad token refused",
+    "status": 401
+  },
+  {
+    "name": "browser origin refused",
+    "status": 403
+  },
+  {
+    "name": "arbitrary filesystem path refused",
+    "status": 409
+  },
+  {
+    "name": "prototype property is not a project",
+    "status": 409
+  },
+  {
+    "name": "executable/flags not accepted",
+    "status": 409
+  },
+  {
+    "name": "arbitrary native RPC unavailable",
+    "status": 404
+  },
+  {
+    "name": "unauthorized event stream refused",
+    "status": 401
+  },
+  {
+    "name": "unknown agent refused",
+    "status": 409
+  },
+  {
+    "name": "client Claude executable override refused",
+    "status": 409
+  },
+  {
+    "name": "client cwd override refused",
+    "status": 409
+  },
+  {
+    "name": "malformed session body refused",
+    "status": 409
+  },
+  {
+    "name": "health requires authentication",
+    "status": 401
+  },
+  {
+    "name": "diagnostics requires authentication",
+    "status": 401
+  },
+  {
+    "name": "operation lookup requires authentication",
+    "status": 401
+  },
+  {
+    "name": "force release has no HTTP route",
+    "status": 404
+  },
+  {
+    "name": "browser cannot inspect diagnostics",
+    "status": 403
+  },
+  {
+    "name": "mutations require stable idempotency key",
+    "status": 409
+  },
+  {
+    "name": "oversized request refused",
+    "status": 413
+  },
+  {
+    "name": "invalid Host refused",
+    "status": 403
+  },
+  {
+    "name": "/health is readable and excludes bearer token",
+    "status": 200
+  },
+  {
+    "name": "/diagnostics is readable and excludes bearer token",
+    "status": 200
+  }
+]

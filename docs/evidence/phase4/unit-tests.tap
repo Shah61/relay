@@ -1,0 +1,248 @@
+
+> test
+> node --experimental-strip-types --test tests/*.test.ts
+
+TAP version 13
+# Subtest: UNIT: no ready auth means query is never constructed
+ok 1 - UNIT: no ready auth means query is never constructed
+  ---
+  duration_ms: 0.804209
+  type: 'test'
+  ...
+# Subtest: UNIT: API/provider credentials are refused, not silently reused
+ok 2 - UNIT: API/provider credentials are refused, not silently reused
+  ---
+  duration_ms: 0.131958
+  type: 'test'
+  ...
+# Subtest: UNIT: bridge FIFO only advances on native result; interrupt receipt is not terminal
+ok 3 - UNIT: bridge FIFO only advances on native result; interrupt receipt is not terminal
+  ---
+  duration_ms: 0.680167
+  type: 'test'
+  ...
+# Subtest: UNIT: native IDs, partial stream, errors, and explicit resume preserved
+ok 4 - UNIT: native IDs, partial stream, errors, and explicit resume preserved
+  ---
+  duration_ms: 0.452875
+  type: 'test'
+  ...
+# Subtest: UNIT: permission answers validate before consumption; duplicates/abort fail closed
+ok 5 - UNIT: permission answers validate before consumption; duplicates/abort fail closed
+  ---
+  duration_ms: 0.544625
+  type: 'test'
+  ...
+# Subtest: UNIT: synthetic successes never promote documented Claude capabilities
+ok 6 - UNIT: synthetic successes never promote documented Claude capabilities
+  ---
+  duration_ms: 0.14925
+  type: 'test'
+  ...
+# Subtest: UNIT: common Codex adapter retains Phase 2 raw tool events and native IDs
+ok 7 - UNIT: common Codex adapter retains Phase 2 raw tool events and native IDs
+  ---
+  duration_ms: 10.778959
+  type: 'test'
+  ...
+# Subtest: REGRESSION: transport-disconnected parent must still be stopped using its owned handle
+ok 8 - REGRESSION: transport-disconnected parent must still be stopped using its owned handle
+  ---
+  duration_ms: 19.168666
+  type: 'test'
+  ...
+# (node:11352) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: UNIT: simultaneous cross-agent and symlink starts acquire only one lease
+ok 9 - UNIT: simultaneous cross-agent and symlink starts acquire only one lease
+  ---
+  duration_ms: 69.919875
+  type: 'test'
+  ...
+# Subtest: UNIT: allowlist, malformed input, unsupported queue and stale approvals
+ok 10 - UNIT: allowlist, malformed input, unsupported queue and stale approvals
+  ---
+  duration_ms: 20.102791
+  type: 'test'
+  ...
+# Subtest: UNIT: restart retains uncertain leases and invalidates current controls
+ok 11 - UNIT: restart retains uncertain leases and invalidates current controls
+  ---
+  duration_ms: 29.214167
+  type: 'test'
+  ...
+# Subtest: UNIT: singleton lock prevents competing bridge instances
+ok 12 - UNIT: singleton lock prevents competing bridge instances
+  ---
+  duration_ms: 3.355334
+  type: 'test'
+  ...
+# Subtest: UNIT: resume serializes concurrent requests, renews generation, close is idempotent
+ok 13 - UNIT: resume serializes concurrent requests, renews generation, close is idempotent
+  ---
+  duration_ms: 32.722959
+  type: 'test'
+  ...
+# Subtest: UNIT: malformed question response does not consume callback; stale generation refused
+ok 14 - UNIT: malformed question response does not consume callback; stale generation refused
+  ---
+  duration_ms: 17.71475
+  type: 'test'
+  ...
+# (node:11353) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Real Git worktree roots: nested/symlink/alternate paths conflict; distinct worktree can run
+ok 15 - Real Git worktree roots: nested/symlink/alternate paths conflict; distinct worktree can run
+  ---
+  duration_ms: 202.747084
+  type: 'test'
+  ...
+# Subtest: Legacy duplicate worktree claims migrate without dropping either blocker; reconciliation audited
+ok 16 - Legacy duplicate worktree claims migrate without dropping either blocker; reconciliation audited
+  ---
+  duration_ms: 18.892959
+  type: 'test'
+  ...
+# Subtest: allowlist, early thread notification, persistence and monotonic sequence
+ok 17 - allowlist, early thread notification, persistence and monotonic sequence
+  ---
+  duration_ms: 6.483291
+  type: 'test'
+  ...
+# Subtest: approval native id zero, generation check, offered decision and duplicate protection
+ok 18 - approval native id zero, generation check, offered decision and duplicate protection
+  ---
+  duration_ms: 2.993459
+  type: 'test'
+  ...
+# Subtest: interrupt receipt does not mean interrupted; terminal event expires approval
+ok 19 - interrupt receipt does not mean interrupted; terminal event expires approval
+  ---
+  duration_ms: 2.359417
+  type: 'test'
+  ...
+# Subtest: steer completion race never creates a replacement turn
+ok 20 - steer completion race never creates a replacement turn
+  ---
+  duration_ms: 1.417167
+  type: 'test'
+  ...
+# Subtest: concurrent prompts cannot start two turns
+ok 21 - concurrent prompts cannot start two turns
+  ---
+  duration_ms: 2.26375
+  type: 'test'
+  ...
+# Subtest: disconnect retains last active turn and refuses control
+ok 22 - disconnect retains last active turn and refuses control
+  ---
+  duration_ms: 1.691542
+  type: 'test'
+  ...
+# Subtest: normalization preserves uncertainty and native failure
+ok 23 - normalization preserves uncertainty and native failure
+  ---
+  duration_ms: 0.082875
+  type: 'test'
+  ...
+# Subtest: RPC response correlation handles out-of-order replies and errors
+ok 24 - RPC response correlation handles out-of-order replies and errors
+  ---
+  duration_ms: 0.211792
+  type: 'test'
+  ...
+# Subtest: late terminal notification cannot clear a newer turn
+ok 25 - late terminal notification cannot clear a newer turn
+  ---
+  duration_ms: 2.039625
+  type: 'test'
+  ...
+# Subtest: uncertain turn delivery blocks blind prompt retry
+ok 26 - uncertain turn delivery blocks blind prompt retry
+  ---
+  duration_ms: 2.612833
+  type: 'test'
+  ...
+# (node:11355) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: SQLite migrations preserve data and reject future versions without reset
+ok 27 - SQLite migrations preserve data and reject future versions without reset
+  ---
+  duration_ms: 25.307792
+  type: 'test'
+  ...
+# Subtest: SQLite corruption and invalid operation transitions fail safely
+ok 28 - SQLite corruption and invalid operation transitions fail safely
+  ---
+  duration_ms: 5.779708
+  type: 'test'
+  ...
+# Subtest: Idempotency canonical hashes, conflicting payloads, and all crash stages
+ok 29 - Idempotency canonical hashes, conflicting payloads, and all crash stages
+  ---
+  duration_ms: 8.4065
+  type: 'test'
+  ...
+# Subtest: Event bounds, global/per-session retention, age expiry and monotonic sequence across reopen
+ok 30 - Event bounds, global/per-session retention, age expiry and monotonic sequence across reopen
+  ---
+  duration_ms: 12.44625
+  type: 'test'
+  ...
+# Subtest: Durable operation capacity refuses new IDs but retains deduplication tombstones
+ok 31 - Durable operation capacity refuses new IDs but retains deduplication tombstones
+  ---
+  duration_ms: 3.419333
+  type: 'test'
+  ...
+# Subtest: bounded payloads redact known secret fields and clearly mark truncation
+ok 32 - bounded payloads redact known secret fields and clearly mark truncation
+  ---
+  duration_ms: 0.311875
+  type: 'test'
+  ...
+# Subtest: native framing handles UTF-8 chunks and refuses oversized frames without parsing
+ok 33 - native framing handles UTF-8 chunks and refuses oversized frames without parsing
+  ---
+  duration_ms: 0.205708
+  type: 'test'
+  ...
+# Subtest: process identity detects mismatched start fingerprint; observation-gap monitor is conservative
+ok 34 - process identity detects mismatched start fingerprint; observation-gap monitor is conservative
+  ---
+  duration_ms: 8.823125
+  type: 'test'
+  ...
+# Subtest: SQLite ownership is exclusive while process lives and releases explicitly
+ok 35 - SQLite ownership is exclusive while process lives and releases explicitly
+  ---
+  duration_ms: 15.837667
+  type: 'test'
+  ...
+# Subtest: Pre-SDK stream bound rejects oversized native output before JSON decoding
+ok 36 - Pre-SDK stream bound rejects oversized native output before JSON decoding
+  ---
+  duration_ms: 1.512208
+  type: 'test'
+  ...
+# Subtest: SQLite full database rolls back without delivery and marks storage failed
+ok 37 - SQLite full database rolls back without delivery and marks storage failed
+  ---
+  duration_ms: 4.494708
+  type: 'test'
+  ...
+# Subtest: Pinned external SQLite reader triggers a bounded WAL stop, not endless growth
+ok 38 - Pinned external SQLite reader triggers a bounded WAL stop, not endless growth
+  ---
+  duration_ms: 5.596709
+  type: 'test'
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 525.216542

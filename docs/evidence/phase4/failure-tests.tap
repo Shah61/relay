@@ -1,0 +1,88 @@
+
+> test:failure
+> node --experimental-strip-types --test tests/failure.integration.ts
+
+TAP version 13
+# (node:11685) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: FAILURE: kill bridge after prompt dispatch; restart/retry never duplicates native delivery
+ok 1 - FAILURE: kill bridge after prompt dispatch; restart/retry never duplicates native delivery
+  ---
+  duration_ms: 485.058083
+  type: 'test'
+  ...
+# Subtest: FAILURE: lost HTTP response after completed dispatch is replayed, changed payload refused
+ok 2 - FAILURE: lost HTTP response after completed dispatch is replayed, changed payload refused
+  ---
+  duration_ms: 433.219959
+  type: 'test'
+  ...
+# Subtest: FAILURE: kill owned test parent; report unexpected exit without releasing worktree
+ok 3 - FAILURE: kill owned test parent; report unexpected exit without releasing worktree
+  ---
+  duration_ms: 434.360208
+  type: 'test'
+  ...
+# Subtest: FAILURE: conflicting prompt/close/interrupt operations and worktree starts are authoritative
+ok 4 - FAILURE: conflicting prompt/close/interrupt operations and worktree starts are authoritative
+  ---
+  duration_ms: 271.3315
+  type: 'test'
+  ...
+# Subtest: FAILURE: duplicate approval replies and restart invalidate native callbacks
+ok 5 - FAILURE: duplicate approval replies and restart invalidate native callbacks
+  ---
+  duration_ms: 450.799125
+  type: 'test'
+  ...
+# Subtest: FAILURE: crash after decision send produces uncertainty, never sends it twice
+ok 6 - FAILURE: crash after decision send produces uncertainty, never sends it twice
+  ---
+  duration_ms: 470.270667
+  type: 'test'
+  ...
+# Subtest: FAILURE: actual SSE disconnect/reconnect replay, retention gap and snapshot resync
+ok 7 - FAILURE: actual SSE disconnect/reconnect replay, retention gap and snapshot resync
+  ---
+  duration_ms: 251.962417
+  type: 'test'
+  ...
+# Subtest: FAILURE: close is not stop, safe stop records expected exit; offline reconciliation is audited
+ok 8 - FAILURE: close is not stop, safe stop records expected exit; offline reconciliation is audited
+  ---
+  duration_ms: 457.220833
+  type: 'test'
+  ...
+# Subtest: FAILURE: SIGSTOP/SIGCONT observation gap enters reconciliation without resending prompts
+ok 9 - FAILURE: SIGSTOP/SIGCONT observation gap enters reconciliation without resending prompts
+  ---
+  duration_ms: 1244.639708
+  type: 'test'
+  ...
+# Subtest: FAILURE: startup distinguishes an absent recorded parent from an unobserved exit result
+ok 10 - FAILURE: startup distinguishes an absent recorded parent from an unobserved exit result
+  ---
+  duration_ms: 399.5335
+  type: 'test'
+  ...
+# Subtest: FAILURE: deliberately inconsistent test operation journal prevents server startup
+ok 11 - FAILURE: deliberately inconsistent test operation journal prevents server startup
+  ---
+  duration_ms: 389.172834
+  type: 'test'
+  ...
+# Subtest: FAILURE: an established SSE stream reports a gap when burst output overtakes its cursor
+ok 12 - FAILURE: an established SSE stream reports a gap when burst output overtakes its cursor
+  ---
+  duration_ms: 264.290458
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5641.392875

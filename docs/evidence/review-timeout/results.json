@@ -1,0 +1,18 @@
+{
+  "startedAt": "2026-10-01T06:38:17.103Z",
+  "checks": {},
+  "turns": [
+    "01a0f62f-68f2-7560-bdaf-61e383ee3bdf"
+  ],
+  "session": {
+    "id": "b306a458-2d5a-4dd9-a252-5d9f9f23b7e2",
+    "project": "fixture",
+    "threadId": "01a0f62f-6838-7503-bb9b-0aad73827a05",
+    "activeTurnId": null,
+    "generation": "3b5d8916-61ba-493d-b9c9-9c598eda1c69",
+    "status": "idle"
+  },
+  "success": false,
+  "error": "Error: Timed out: review pending approvals with client status/approve",
+  "finishedAt": "2026-10-01T06:41:17.421Z"
+}

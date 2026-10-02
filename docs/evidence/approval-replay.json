@@ -1,0 +1,10 @@
+[
+  {
+    "generation": "stale-generation",
+    "response": "Error: 409: {\"error\":\"Error: Stale, duplicate, or mismatched approval\"}"
+  },
+  {
+    "generation": "3b5d8916-61ba-493d-b9c9-9c598eda1c69",
+    "response": "Error: 409: {\"error\":\"Error: Stale, duplicate, or mismatched approval\"}"
+  }
+]

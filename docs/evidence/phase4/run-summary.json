@@ -1,0 +1,14 @@
+{
+  "phase": 4,
+  "inferenceAttempted": false,
+  "claudeLiveHarnessRun": false,
+  "claudeVerificationFileExists": false,
+  "unitTests": 38,
+  "failureTests": 12,
+  "httpSecurityChecks": 22,
+  "schemaVersion": 2,
+  "bridgeOwnerReleased": true,
+  "leaseCount": 1,
+  "leaseMemberCount": 2,
+  "serviceInstalledByThisPhase": false
+}

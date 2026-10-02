@@ -1,0 +1,29 @@
+{
+  "projects": {
+    "fixture": "test-fixture"
+  },
+  "claude": {},
+  "port": 0,
+  "limits": {
+    "eventBytes": 65536,
+    "rawBytes": 32768,
+    "outputBytes": 8192,
+    "diffBytes": 16384,
+    "errorBytes": 4096,
+    "journalBytes": 16777216,
+    "eventCount": 10000,
+    "sessionEvents": 2000,
+    "eventAgeMs": 604800000,
+    "databaseBytes": 268435456,
+    "maxOperations": 100000,
+    "maxSessions": 10000,
+    "maxApprovals": 100000,
+    "transportBytes": 2097152,
+    "replayBatch": 100,
+    "heartbeatMs": 15000,
+    "gapMs": 45000
+  },
+  "browser": {
+    "port": 47832
+  }
+}

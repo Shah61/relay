@@ -1,0 +1,51 @@
+{
+  "startedAt": "2026-10-01T06:35:29.284Z",
+  "checks": {
+    "allowedApproval": {
+      "id": "1d88b13f-8803-4157-8b24-bb480fc2d7ef",
+      "command": "/bin/zsh -lc 'sleep 30'"
+    },
+    "realTask": true,
+    "sameThreadMemory": {
+      "threadId": "01a0f62a-22cc-7102-ae5f-f28c1748ca21",
+      "response": "fixture-color-orange-42"
+    },
+    "steering": {
+      "outcome": "accepted",
+      "turnId": "01a0f62d-656e-74b0-8dd8-619d26ef00b3",
+      "result": {
+        "turnId": "01a0f62d-656e-74b0-8dd8-619d26ef00b3"
+      },
+      "response": "I’ll run `sleep 12` and wait for it to finish.\n`sleep 12` finished successfully. No files edited.\n\nSTEER_OBSERVED"
+    },
+    "steeringAfterCompletion": {
+      "outcome": "raced",
+      "reason": "No active turn"
+    },
+    "interruptRequest": {
+      "requested": true,
+      "turnId": "01a0f62d-b130-70c2-aa2d-fe1ff51d5b1d"
+    },
+    "interruptedNative": true,
+    "staleApprovalRejected": true
+  },
+  "turns": [
+    "01a0f62a-adb7-70d2-8e87-6d1fc13c5458",
+    "01a0f62d-54cb-79a3-9fb3-38c1866365c1",
+    "01a0f62d-656e-74b0-8dd8-619d26ef00b3",
+    "01a0f62d-b130-70c2-aa2d-fe1ff51d5b1d",
+    "01a0f62d-c2fe-72c3-9afc-8173ebfe40b8"
+  ],
+  "session": {
+    "id": "83fff461-da2b-4087-a800-4ff338452630",
+    "project": "fixture",
+    "threadId": "01a0f62a-22cc-7102-ae5f-f28c1748ca21",
+    "activeTurnId": "01a0f62a-adb7-70d2-8e87-6d1fc13c5458",
+    "generation": "c6ea77df-92d0-4fe0-896c-d5d00ab1f159",
+    "status": "waiting_approval",
+    "busy": false
+  },
+  "success": false,
+  "error": "Error: 409: {\"error\":\"Error: Invalid decision\"}",
+  "finishedAt": "2026-10-01T06:36:35.367Z"
+}

@@ -1,0 +1,152 @@
+
+> test
+> node --experimental-strip-types --test tests/*.test.ts
+
+TAP version 13
+# Subtest: UNIT: no ready auth means query is never constructed
+ok 1 - UNIT: no ready auth means query is never constructed
+  ---
+  duration_ms: 0.688584
+  type: 'test'
+  ...
+# Subtest: UNIT: API/provider credentials are refused, not silently reused
+ok 2 - UNIT: API/provider credentials are refused, not silently reused
+  ---
+  duration_ms: 0.136667
+  type: 'test'
+  ...
+# Subtest: UNIT: bridge FIFO only advances on native result; interrupt receipt is not terminal
+ok 3 - UNIT: bridge FIFO only advances on native result; interrupt receipt is not terminal
+  ---
+  duration_ms: 0.674416
+  type: 'test'
+  ...
+# Subtest: UNIT: native IDs, partial stream, errors, and explicit resume preserved
+ok 4 - UNIT: native IDs, partial stream, errors, and explicit resume preserved
+  ---
+  duration_ms: 0.529666
+  type: 'test'
+  ...
+# Subtest: UNIT: permission answers validate before consumption; duplicates/abort fail closed
+ok 5 - UNIT: permission answers validate before consumption; duplicates/abort fail closed
+  ---
+  duration_ms: 0.643875
+  type: 'test'
+  ...
+# Subtest: UNIT: synthetic successes never promote documented Claude capabilities
+ok 6 - UNIT: synthetic successes never promote documented Claude capabilities
+  ---
+  duration_ms: 0.154209
+  type: 'test'
+  ...
+# Subtest: UNIT: common Codex adapter retains Phase 2 raw tool events and native IDs
+ok 7 - UNIT: common Codex adapter retains Phase 2 raw tool events and native IDs
+  ---
+  duration_ms: 6.862875
+  type: 'test'
+  ...
+# Subtest: UNIT: simultaneous cross-agent and symlink starts acquire only one lease
+ok 8 - UNIT: simultaneous cross-agent and symlink starts acquire only one lease
+  ---
+  duration_ms: 53.816167
+  type: 'test'
+  ...
+# Subtest: UNIT: allowlist, malformed input, unsupported queue and stale approvals
+ok 9 - UNIT: allowlist, malformed input, unsupported queue and stale approvals
+  ---
+  duration_ms: 21.303375
+  type: 'test'
+  ...
+# Subtest: UNIT: restart retains uncertain leases and invalidates current controls
+ok 10 - UNIT: restart retains uncertain leases and invalidates current controls
+  ---
+  duration_ms: 27.421125
+  type: 'test'
+  ...
+# Subtest: UNIT: singleton lock prevents competing bridge instances
+ok 11 - UNIT: singleton lock prevents competing bridge instances
+  ---
+  duration_ms: 1.926541
+  type: 'test'
+  ...
+# Subtest: UNIT: resume serializes concurrent requests, renews generation, close is idempotent
+ok 12 - UNIT: resume serializes concurrent requests, renews generation, close is idempotent
+  ---
+  duration_ms: 33.297542
+  type: 'test'
+  ...
+# Subtest: UNIT: malformed question response does not consume callback; stale generation refused
+ok 13 - UNIT: malformed question response does not consume callback; stale generation refused
+  ---
+  duration_ms: 16.948458
+  type: 'test'
+  ...
+# Subtest: allowlist, early thread notification, persistence and monotonic sequence
+ok 14 - allowlist, early thread notification, persistence and monotonic sequence
+  ---
+  duration_ms: 11.12025
+  type: 'test'
+  ...
+# Subtest: approval native id zero, generation check, offered decision and duplicate protection
+ok 15 - approval native id zero, generation check, offered decision and duplicate protection
+  ---
+  duration_ms: 8.476667
+  type: 'test'
+  ...
+# Subtest: interrupt receipt does not mean interrupted; terminal event expires approval
+ok 16 - interrupt receipt does not mean interrupted; terminal event expires approval
+  ---
+  duration_ms: 2.119584
+  type: 'test'
+  ...
+# Subtest: steer completion race never creates a replacement turn
+ok 17 - steer completion race never creates a replacement turn
+  ---
+  duration_ms: 1.045792
+  type: 'test'
+  ...
+# Subtest: concurrent prompts cannot start two turns
+ok 18 - concurrent prompts cannot start two turns
+  ---
+  duration_ms: 2.301084
+  type: 'test'
+  ...
+# Subtest: disconnect retains last active turn and refuses control
+ok 19 - disconnect retains last active turn and refuses control
+  ---
+  duration_ms: 1.306209
+  type: 'test'
+  ...
+# Subtest: normalization preserves uncertainty and native failure
+ok 20 - normalization preserves uncertainty and native failure
+  ---
+  duration_ms: 0.056167
+  type: 'test'
+  ...
+# Subtest: RPC response correlation handles out-of-order replies and errors
+ok 21 - RPC response correlation handles out-of-order replies and errors
+  ---
+  duration_ms: 0.229875
+  type: 'test'
+  ...
+# Subtest: late terminal notification cannot clear a newer turn
+ok 22 - late terminal notification cannot clear a newer turn
+  ---
+  duration_ms: 1.115042
+  type: 'test'
+  ...
+# Subtest: uncertain turn delivery blocks blind prompt retry
+ok 23 - uncertain turn delivery blocks blind prompt retry
+  ---
+  duration_ms: 1.339125
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 284.135917

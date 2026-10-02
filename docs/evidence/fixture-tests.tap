@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: baseline
+ok 1 - baseline
+  ---
+  duration_ms: 0.408416
+  type: 'test'
+  ...
+# Subtest: double(3) equals 6
+ok 2 - double(3) equals 6
+  ---
+  duration_ms: 0.105875
+  type: 'test'
+  ...
+# Subtest: double(-2) equals -4
+ok 3 - double(-2) equals -4
+  ---
+  duration_ms: 0.045667
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 47.844958

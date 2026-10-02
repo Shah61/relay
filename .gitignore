@@ -1,0 +1,8 @@
+node_modules/
+.bridge/
+test-fixture/.git/
+
+config.local.json
+dist-web/
+.env
+.env.*

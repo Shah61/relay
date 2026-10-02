@@ -1,0 +1,316 @@
+
+> test
+> node --experimental-strip-types --test tests/*.test.ts
+
+TAP version 13
+# (node:68257) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Device credentials: single use, hashes only, expiry, idle timeout, durable revocation
+ok 1 - Device credentials: single use, hashes only, expiry, idle timeout, durable revocation
+  ---
+  duration_ms: 105.726
+  type: 'test'
+  ...
+# Subtest: Gateway rejects unauthenticated, bearer, wrong Host/Origin, CSRF, forged identity, and admin routes
+ok 2 - Gateway rejects unauthenticated, bearer, wrong Host/Origin, CSRF, forged identity, and admin routes
+  ---
+  duration_ms: 66.04725
+  type: 'test'
+  ...
+# Subtest: Role and project authorization precedes operation dispatch, including guessed session/event IDs
+ok 3 - Role and project authorization precedes operation dispatch, including guessed session/event IDs
+  ---
+  duration_ms: 64.179083
+  type: 'test'
+  ...
+# Subtest: Durable idempotency namespaces isolate devices and block changed-payload replay
+ok 4 - Durable idempotency namespaces isolate devices and block changed-payload replay
+  ---
+  duration_ms: 36.851667
+  type: 'test'
+  ...
+# Subtest: Private HTTPS cookie is Secure, HttpOnly, strict, host-only; local cookie cannot authenticate remotely
+ok 5 - Private HTTPS cookie is Secure, HttpOnly, strict, host-only; local cookie cannot authenticate remotely
+  ---
+  duration_ms: 13.991375
+  type: 'test'
+  ...
+# Subtest: Revoking a device immediately disconnects its real SSE stream and rejects further reads
+ok 6 - Revoking a device immediately disconnects its real SSE stream and rejects further reads
+  ---
+  duration_ms: 36.163791
+  type: 'test'
+  ...
+# Subtest: Gateway reports retention gaps and bounded malformed requests without dispatch
+ok 7 - Gateway reports retention gaps and bounded malformed requests without dispatch
+  ---
+  duration_ms: 27.4355
+  type: 'test'
+  ...
+# Subtest: Local admin requires the root token and refuses browser-origin pairing creation
+ok 8 - Local admin requires the root token and refuses browser-origin pairing creation
+  ---
+  duration_ms: 10.570042
+  type: 'test'
+  ...
+# Subtest: Pairing attempts are rate limited
+ok 9 - Pairing attempts are rate limited
+  ---
+  duration_ms: 16.90675
+  type: 'test'
+  ...
+# Subtest: Serve policy refuses Funnel and unrelated routes, allows only empty or exact private Relay mapping
+ok 10 - Serve policy refuses Funnel and unrelated routes, allows only empty or exact private Relay mapping
+  ---
+  duration_ms: 0.386167
+  type: 'test'
+  ...
+# Subtest: Truncated approval content cannot be accepted through the browser API
+ok 11 - Truncated approval content cannot be accepted through the browser API
+  ---
+  duration_ms: 28.699291
+  type: 'test'
+  ...
+# Subtest: UNIT: no ready auth means query is never constructed
+ok 12 - UNIT: no ready auth means query is never constructed
+  ---
+  duration_ms: 1.209459
+  type: 'test'
+  ...
+# Subtest: UNIT: API/provider credentials are refused, not silently reused
+ok 13 - UNIT: API/provider credentials are refused, not silently reused
+  ---
+  duration_ms: 0.475042
+  type: 'test'
+  ...
+# Subtest: UNIT: bridge FIFO only advances on native result; interrupt receipt is not terminal
+ok 14 - UNIT: bridge FIFO only advances on native result; interrupt receipt is not terminal
+  ---
+  duration_ms: 1.40975
+  type: 'test'
+  ...
+# Subtest: UNIT: native IDs, partial stream, errors, and explicit resume preserved
+ok 15 - UNIT: native IDs, partial stream, errors, and explicit resume preserved
+  ---
+  duration_ms: 1.150917
+  type: 'test'
+  ...
+# Subtest: UNIT: permission answers validate before consumption; duplicates/abort fail closed
+ok 16 - UNIT: permission answers validate before consumption; duplicates/abort fail closed
+  ---
+  duration_ms: 0.993791
+  type: 'test'
+  ...
+# Subtest: UNIT: synthetic successes never promote documented Claude capabilities
+ok 17 - UNIT: synthetic successes never promote documented Claude capabilities
+  ---
+  duration_ms: 0.846458
+  type: 'test'
+  ...
+# Subtest: UNIT: common Codex adapter retains Phase 2 raw tool events and native IDs
+ok 18 - UNIT: common Codex adapter retains Phase 2 raw tool events and native IDs
+  ---
+  duration_ms: 18.44325
+  type: 'test'
+  ...
+# Subtest: REGRESSION: transport-disconnected parent must still be stopped using its owned handle
+ok 19 - REGRESSION: transport-disconnected parent must still be stopped using its owned handle
+  ---
+  duration_ms: 53.091417
+  type: 'test'
+  ...
+# (node:68260) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: UNIT: simultaneous cross-agent and symlink starts acquire only one lease
+ok 20 - UNIT: simultaneous cross-agent and symlink starts acquire only one lease
+  ---
+  duration_ms: 144.8795
+  type: 'test'
+  ...
+# Subtest: UNIT: allowlist, malformed input, unsupported queue and stale approvals
+ok 21 - UNIT: allowlist, malformed input, unsupported queue and stale approvals
+  ---
+  duration_ms: 38.680792
+  type: 'test'
+  ...
+# Subtest: UNIT: restart retains uncertain leases and invalidates current controls
+ok 22 - UNIT: restart retains uncertain leases and invalidates current controls
+  ---
+  duration_ms: 59.309625
+  type: 'test'
+  ...
+# Subtest: UNIT: singleton lock prevents competing bridge instances
+ok 23 - UNIT: singleton lock prevents competing bridge instances
+  ---
+  duration_ms: 6.02525
+  type: 'test'
+  ...
+# Subtest: UNIT: resume serializes concurrent requests, renews generation, close is idempotent
+ok 24 - UNIT: resume serializes concurrent requests, renews generation, close is idempotent
+  ---
+  duration_ms: 39.451458
+  type: 'test'
+  ...
+# Subtest: UNIT: malformed question response does not consume callback; stale generation refused
+ok 25 - UNIT: malformed question response does not consume callback; stale generation refused
+  ---
+  duration_ms: 30.10475
+  type: 'test'
+  ...
+# (node:68261) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Real Git worktree roots: nested/symlink/alternate paths conflict; distinct worktree can run
+ok 26 - Real Git worktree roots: nested/symlink/alternate paths conflict; distinct worktree can run
+  ---
+  duration_ms: 319.652625
+  type: 'test'
+  ...
+# Subtest: Legacy duplicate worktree claims migrate without dropping either blocker; reconciliation audited
+ok 27 - Legacy duplicate worktree claims migrate without dropping either blocker; reconciliation audited
+  ---
+  duration_ms: 22.079167
+  type: 'test'
+  ...
+# Subtest: allowlist, early thread notification, persistence and monotonic sequence
+ok 28 - allowlist, early thread notification, persistence and monotonic sequence
+  ---
+  duration_ms: 10.52075
+  type: 'test'
+  ...
+# Subtest: approval native id zero, generation check, offered decision and duplicate protection
+ok 29 - approval native id zero, generation check, offered decision and duplicate protection
+  ---
+  duration_ms: 3.238875
+  type: 'test'
+  ...
+# Subtest: interrupt receipt does not mean interrupted; terminal event expires approval
+ok 30 - interrupt receipt does not mean interrupted; terminal event expires approval
+  ---
+  duration_ms: 6.688292
+  type: 'test'
+  ...
+# Subtest: steer completion race never creates a replacement turn
+ok 31 - steer completion race never creates a replacement turn
+  ---
+  duration_ms: 3.932958
+  type: 'test'
+  ...
+# Subtest: concurrent prompts cannot start two turns
+ok 32 - concurrent prompts cannot start two turns
+  ---
+  duration_ms: 5.97425
+  type: 'test'
+  ...
+# Subtest: disconnect retains last active turn and refuses control
+ok 33 - disconnect retains last active turn and refuses control
+  ---
+  duration_ms: 28.716375
+  type: 'test'
+  ...
+# Subtest: normalization preserves uncertainty and native failure
+ok 34 - normalization preserves uncertainty and native failure
+  ---
+  duration_ms: 0.116917
+  type: 'test'
+  ...
+# Subtest: RPC response correlation handles out-of-order replies and errors
+ok 35 - RPC response correlation handles out-of-order replies and errors
+  ---
+  duration_ms: 0.282916
+  type: 'test'
+  ...
+# Subtest: late terminal notification cannot clear a newer turn
+ok 36 - late terminal notification cannot clear a newer turn
+  ---
+  duration_ms: 13.3245
+  type: 'test'
+  ...
+# Subtest: uncertain turn delivery blocks blind prompt retry
+ok 37 - uncertain turn delivery blocks blind prompt retry
+  ---
+  duration_ms: 4.069167
+  type: 'test'
+  ...
+# (node:68263) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: SQLite migrations preserve data and reject future versions without reset
+ok 38 - SQLite migrations preserve data and reject future versions without reset
+  ---
+  duration_ms: 47.258
+  type: 'test'
+  ...
+# Subtest: SQLite corruption and invalid operation transitions fail safely
+ok 39 - SQLite corruption and invalid operation transitions fail safely
+  ---
+  duration_ms: 10.241917
+  type: 'test'
+  ...
+# Subtest: Idempotency canonical hashes, conflicting payloads, and all crash stages
+ok 40 - Idempotency canonical hashes, conflicting payloads, and all crash stages
+  ---
+  duration_ms: 15.371333
+  type: 'test'
+  ...
+# Subtest: Event bounds, global/per-session retention, age expiry and monotonic sequence across reopen
+ok 41 - Event bounds, global/per-session retention, age expiry and monotonic sequence across reopen
+  ---
+  duration_ms: 19.718292
+  type: 'test'
+  ...
+# Subtest: Durable operation capacity refuses new IDs but retains deduplication tombstones
+ok 42 - Durable operation capacity refuses new IDs but retains deduplication tombstones
+  ---
+  duration_ms: 9.441708
+  type: 'test'
+  ...
+# Subtest: bounded payloads redact known secret fields and clearly mark truncation
+ok 43 - bounded payloads redact known secret fields and clearly mark truncation
+  ---
+  duration_ms: 0.363166
+  type: 'test'
+  ...
+# Subtest: native framing handles UTF-8 chunks and refuses oversized frames without parsing
+ok 44 - native framing handles UTF-8 chunks and refuses oversized frames without parsing
+  ---
+  duration_ms: 0.379334
+  type: 'test'
+  ...
+# Subtest: process identity detects mismatched start fingerprint; observation-gap monitor is conservative
+ok 45 - process identity detects mismatched start fingerprint; observation-gap monitor is conservative
+  ---
+  duration_ms: 19.278417
+  type: 'test'
+  ...
+# Subtest: SQLite ownership is exclusive while process lives and releases explicitly
+ok 46 - SQLite ownership is exclusive while process lives and releases explicitly
+  ---
+  duration_ms: 33.319417
+  type: 'test'
+  ...
+# Subtest: Pre-SDK stream bound rejects oversized native output before JSON decoding
+ok 47 - Pre-SDK stream bound rejects oversized native output before JSON decoding
+  ---
+  duration_ms: 2.58025
+  type: 'test'
+  ...
+# Subtest: SQLite full database rolls back without delivery and marks storage failed
+ok 48 - SQLite full database rolls back without delivery and marks storage failed
+  ---
+  duration_ms: 13.315208
+  type: 'test'
+  ...
+# Subtest: Pinned external SQLite reader triggers a bounded WAL stop, not endless growth
+ok 49 - Pinned external SQLite reader triggers a bounded WAL stop, not endless growth
+  ---
+  duration_ms: 6.677458
+  type: 'test'
+  ...
+1..49
+# tests 49
+# suites 0
+# pass 49
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2026.747333

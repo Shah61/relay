@@ -1,0 +1,20 @@
+name: Portable relay
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  relay:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: node --experimental-strip-types --test tests/relay.test.ts
+      - run: npm run test:client

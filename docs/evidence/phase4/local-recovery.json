@@ -1,0 +1,395 @@
+{
+  "checkedAt": "2026-10-01T12:18:45.823Z",
+  "inferenceAttempted": false,
+  "health": {
+    "version": "0.4.0",
+    "schemaVersion": 2,
+    "status": "ok",
+    "uptimeMs": 156934
+  },
+  "diagnostics": {
+    "schemaVersion": 2,
+    "sequence": 672,
+    "prunedThrough": 668,
+    "journal": {
+      "events": 4,
+      "bytes": 1880,
+      "oldest": 1790856530467
+    },
+    "operations": [
+      {
+        "state": "failed",
+        "count": 6
+      }
+    ],
+    "leaseCount": 1,
+    "leases": [
+      {
+        "worktree": "/Users/mukhtarshah/Desktop/Coding Personal/prompt-manager/test-fixture",
+        "session_id": "83fff461-da2b-4087-a800-4ff338452630",
+        "acquired_at": 1790856530466
+      }
+    ],
+    "leasesTruncated": false,
+    "databaseHealth": "ok_at_open",
+    "limits": {
+      "eventBytes": 65536,
+      "rawBytes": 32768,
+      "outputBytes": 8192,
+      "diffBytes": 16384,
+      "errorBytes": 4096,
+      "journalBytes": 16777216,
+      "eventCount": 10000,
+      "sessionEvents": 2000,
+      "eventAgeMs": 604800000,
+      "databaseBytes": 268435456,
+      "maxOperations": 100000,
+      "maxSessions": 10000,
+      "maxApprovals": 100000,
+      "transportBytes": 2097152,
+      "replayBatch": 100,
+      "heartbeatMs": 15000,
+      "gapMs": 45000,
+      "pendingApprovals": 32,
+      "sseBytes": 66560,
+      "sessionPage": 20
+    },
+    "version": "0.4.0",
+    "uptimeMs": 156935,
+    "activeSessions": 0,
+    "reconciliation": [
+      "83fff461-da2b-4087-a800-4ff338452630",
+      "b306a458-2d5a-4dd9-a252-5d9f9f23b7e2"
+    ],
+    "sseClients": 0,
+    "claudeRuntimeVerification": "unchanged; no Phase 4 inference"
+  },
+  "sessions": {
+    "sessions": [
+      {
+        "id": "83fff461-da2b-4087-a800-4ff338452630",
+        "agent": "codex",
+        "project": "fixture",
+        "worktree": "/Users/mukhtarshah/Desktop/Coding Personal/prompt-manager/test-fixture",
+        "nativeSessionId": "01a0f62a-22cc-7102-ae5f-f28c1748ca21",
+        "lifecycle": "disconnected",
+        "currentTurn": {
+          "id": null,
+          "nativeId": null,
+          "idSource": "native",
+          "state": "unknown"
+        },
+        "process": {
+          "generation": "c6ea77df-92d0-4fe0-896c-d5d00ab1f159",
+          "state": "unknown",
+          "children": "unknown",
+          "observation": {
+            "state": "unknown",
+            "checkedAt": "2026-10-01T12:16:08.883Z"
+          }
+        },
+        "queuedInputCount": 0,
+        "leaseHeld": true,
+        "capabilities": {
+          "followup": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "turn/start on the same thread",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "queuedInput": {
+            "supported": false,
+            "implemented": false,
+            "verification": "unsupported",
+            "available": false,
+            "mechanism": "Not offered by this adapter; do not substitute another operation",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "activeSteering": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "turn/steer with expectedTurnId",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "turnInterrupt": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "turn/interrupt; native turn terminal required; shell children may survive",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "processShutdown": {
+            "supported": true,
+            "implemented": true,
+            "verification": "unverified",
+            "available": false,
+            "mechanism": "stdin EOF then bounded SIGTERM; parent exit observed",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "processTermination": {
+            "supported": null,
+            "implemented": false,
+            "verification": "unknown",
+            "available": false,
+            "mechanism": "No guarantee that every shell descendant has terminated",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "approval": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "command/file requestApproval → accept",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "approvalCancel": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "offered cancel decision denies and interrupts",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "userInput": {
+            "supported": false,
+            "implemented": false,
+            "verification": "unsupported",
+            "available": false,
+            "mechanism": "Not offered by this adapter; do not substitute another operation",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "historyResume": {
+            "supported": true,
+            "implemented": false,
+            "verification": "unverified",
+            "available": false,
+            "mechanism": "thread/resume documented; not exposed by this adapter yet",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "processReconnect": {
+            "supported": false,
+            "implemented": false,
+            "verification": "unsupported",
+            "available": false,
+            "mechanism": "Cannot attach this adapter to an arbitrary existing process",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "streaming": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "app-server notifications over stdio",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "fileChanges": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "fileChange items and turn/diff/updated",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          }
+        },
+        "queueUncertain": false,
+        "reconciliationRequired": true,
+        "uncertainty": [
+          "bridge_restarted_no_process_reconnect"
+        ],
+        "threadId": "01a0f62a-22cc-7102-ae5f-f28c1748ca21",
+        "generation": "c6ea77df-92d0-4fe0-896c-d5d00ab1f159",
+        "activeTurnId": null,
+        "status": "disconnected",
+        "snapshotUrl": "/sessions/83fff461-da2b-4087-a800-4ff338452630"
+      },
+      {
+        "id": "b306a458-2d5a-4dd9-a252-5d9f9f23b7e2",
+        "agent": "codex",
+        "project": "fixture",
+        "worktree": "/Users/mukhtarshah/Desktop/Coding Personal/prompt-manager/test-fixture",
+        "nativeSessionId": "01a0f62f-6838-7503-bb9b-0aad73827a05",
+        "lifecycle": "disconnected",
+        "currentTurn": {
+          "id": null,
+          "nativeId": null,
+          "idSource": "native",
+          "state": "unknown"
+        },
+        "process": {
+          "generation": "3b5d8916-61ba-493d-b9c9-9c598eda1c69",
+          "state": "unknown",
+          "children": "unknown",
+          "observation": {
+            "state": "unknown",
+            "checkedAt": "2026-10-01T12:16:08.884Z"
+          }
+        },
+        "queuedInputCount": 0,
+        "leaseHeld": true,
+        "capabilities": {
+          "followup": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "turn/start on the same thread",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "queuedInput": {
+            "supported": false,
+            "implemented": false,
+            "verification": "unsupported",
+            "available": false,
+            "mechanism": "Not offered by this adapter; do not substitute another operation",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "activeSteering": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "turn/steer with expectedTurnId",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "turnInterrupt": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "turn/interrupt; native turn terminal required; shell children may survive",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "processShutdown": {
+            "supported": true,
+            "implemented": true,
+            "verification": "unverified",
+            "available": false,
+            "mechanism": "stdin EOF then bounded SIGTERM; parent exit observed",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "processTermination": {
+            "supported": null,
+            "implemented": false,
+            "verification": "unknown",
+            "available": false,
+            "mechanism": "No guarantee that every shell descendant has terminated",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "approval": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "command/file requestApproval → accept",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "approvalCancel": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "offered cancel decision denies and interrupts",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "userInput": {
+            "supported": false,
+            "implemented": false,
+            "verification": "unsupported",
+            "available": false,
+            "mechanism": "Not offered by this adapter; do not substitute another operation",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "historyResume": {
+            "supported": true,
+            "implemented": false,
+            "verification": "unverified",
+            "available": false,
+            "mechanism": "thread/resume documented; not exposed by this adapter yet",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "processReconnect": {
+            "supported": false,
+            "implemented": false,
+            "verification": "unsupported",
+            "available": false,
+            "mechanism": "Cannot attach this adapter to an arbitrary existing process",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "reason": "Agent not ready"
+          },
+          "streaming": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "app-server notifications over stdio",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          },
+          "fileChanges": {
+            "supported": true,
+            "implemented": true,
+            "verification": "verified",
+            "available": false,
+            "mechanism": "fileChange items and turn/diff/updated",
+            "source": "https://developers.openai.com/codex/app-server/",
+            "evidence": "docs/evidence/latest-run.json (Phase 2; Codex 0.153.4, before common-layer refactor)",
+            "reason": "Agent not ready"
+          }
+        },
+        "queueUncertain": false,
+        "reconciliationRequired": true,
+        "uncertainty": [
+          "bridge_restarted_no_process_reconnect"
+        ],
+        "threadId": "01a0f62f-6838-7503-bb9b-0aad73827a05",
+        "generation": "3b5d8916-61ba-493d-b9c9-9c598eda1c69",
+        "activeTurnId": null,
+        "status": "disconnected",
+        "snapshotUrl": "/sessions/b306a458-2d5a-4dd9-a252-5d9f9f23b7e2"
+      }
+    ],
+    "nextOffset": null,
+    "latestEventSequence": 672
+  }
+}

@@ -1,0 +1,72 @@
+TAP version 13
+# (node:63046) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Device credentials: single use, hashes only, expiry, idle timeout, durable revocation
+ok 1 - Device credentials: single use, hashes only, expiry, idle timeout, durable revocation
+  ---
+  duration_ms: 15.949667
+  type: 'test'
+  ...
+# Subtest: Gateway rejects unauthenticated, bearer, wrong Host/Origin, CSRF, forged identity, and admin routes
+ok 2 - Gateway rejects unauthenticated, bearer, wrong Host/Origin, CSRF, forged identity, and admin routes
+  ---
+  duration_ms: 32.252375
+  type: 'test'
+  ...
+# Subtest: Role and project authorization precedes operation dispatch, including guessed session/event IDs
+ok 3 - Role and project authorization precedes operation dispatch, including guessed session/event IDs
+  ---
+  duration_ms: 32.588625
+  type: 'test'
+  ...
+# Subtest: Durable idempotency namespaces isolate devices and block changed-payload replay
+ok 4 - Durable idempotency namespaces isolate devices and block changed-payload replay
+  ---
+  duration_ms: 35.765334
+  type: 'test'
+  ...
+# Subtest: Private HTTPS cookie is Secure, HttpOnly, strict, host-only; local cookie cannot authenticate remotely
+ok 5 - Private HTTPS cookie is Secure, HttpOnly, strict, host-only; local cookie cannot authenticate remotely
+  ---
+  duration_ms: 8.928167
+  type: 'test'
+  ...
+# Subtest: Revoking a device immediately disconnects its real SSE stream and rejects further reads
+ok 6 - Revoking a device immediately disconnects its real SSE stream and rejects further reads
+  ---
+  duration_ms: 24.504959
+  type: 'test'
+  ...
+# Subtest: Gateway reports retention gaps and bounded malformed requests without dispatch
+ok 7 - Gateway reports retention gaps and bounded malformed requests without dispatch
+  ---
+  duration_ms: 23.039083
+  type: 'test'
+  ...
+# Subtest: Local admin requires the root token and refuses browser-origin pairing creation
+ok 8 - Local admin requires the root token and refuses browser-origin pairing creation
+  ---
+  duration_ms: 7.045875
+  type: 'test'
+  ...
+# Subtest: Pairing attempts are rate limited
+ok 9 - Pairing attempts are rate limited
+  ---
+  duration_ms: 14.570375
+  type: 'test'
+  ...
+# Subtest: Serve policy refuses Funnel and unrelated routes, allows only empty or exact private Relay mapping
+ok 10 - Serve policy refuses Funnel and unrelated routes, allows only empty or exact private Relay mapping
+  ---
+  duration_ms: 0.415084
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1846.239625

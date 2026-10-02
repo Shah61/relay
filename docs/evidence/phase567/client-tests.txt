@@ -1,0 +1,50 @@
+
+> test:client
+> node --test tests/browser-client.test.mjs
+
+TAP version 13
+# Subtest: Lost acknowledgement survives reload without persisting prompt or automatically retrying
+ok 1 - Lost acknowledgement survives reload without persisting prompt or automatically retrying
+  ---
+  duration_ms: 12.90875
+  type: 'test'
+  ...
+# Subtest: Unknown operations and uncertain delivery remain visible; no resend
+ok 2 - Unknown operations and uncertain delivery remain visible; no resend
+  ---
+  duration_ms: 0.246917
+  type: 'test'
+  ...
+# Subtest: SSE parser handles fragmented frames and retained-history resync
+ok 3 - SSE parser handles fragmented frames and retained-history resync
+  ---
+  duration_ms: 0.589208
+  type: 'test'
+  ...
+# Subtest: Unknown contract versions refuse authentication setup
+ok 4 - Unknown contract versions refuse authentication setup
+  ---
+  duration_ms: 0.34925
+  type: 'test'
+  ...
+# Subtest: Storage failure prevents mutation dispatch instead of losing its recovery ID
+ok 5 - Storage failure prevents mutation dispatch instead of losing its recovery ID
+  ---
+  duration_ms: 0.384125
+  type: 'test'
+  ...
+# Subtest: Uncertain HTTP response remains in the outbox
+ok 6 - Uncertain HTTP response remains in the outbox
+  ---
+  duration_ms: 0.167584
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 64.845708
