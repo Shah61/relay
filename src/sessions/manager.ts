@@ -324,6 +324,7 @@ export class Sessions extends EventEmitter {
         state: s.queueUncertain ? "unknown" : "bridge_reported",
       },
       latestEventSequence: this.seq,
+      retainedEventCursor: Number(this.store.meta("pruned_through")),
       actions: {
         stopAgent: this.adapters.has(id) && s.process.state !== "exited",
         closeSession: !s.controlClosed,

@@ -88,6 +88,10 @@ export function browserGateway(
         "/": ["index.html", "text/html; charset=utf-8"],
         "/app.mjs": ["app.mjs", "text/javascript; charset=utf-8"],
         "/client.mjs": ["client.mjs", "text/javascript; charset=utf-8"],
+        "/markdown.mjs": ["markdown.mjs", "text/javascript; charset=utf-8"],
+        "/replies.mjs": ["replies.mjs", "text/javascript; charset=utf-8"],
+        "/vendor/marked.mjs": ["vendor/marked.mjs", "text/javascript; charset=utf-8"],
+        "/vendor/purify.mjs": ["vendor/purify.mjs", "text/javascript; charset=utf-8"],
         "/relay-client.mjs": [
           "relay-client.mjs",
           "text/javascript; charset=utf-8",

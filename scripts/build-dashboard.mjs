@@ -20,6 +20,8 @@ if (
 mkdirSync("dist-web", { recursive: true });
 for (const name of [
   "app.mjs",
+  "markdown.mjs",
+  "replies.mjs",
   "client.mjs",
   "relay-client.mjs",
   "e2e.mjs",
@@ -31,6 +33,7 @@ for (const name of [
   "access-crypto.mjs",
 ])
   copyFileSync(`web/${name}`, `dist-web/${name}`);
+cpSync("web/vendor", "dist-web/vendor", { recursive: true });
 const policy = `default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' ${url.origin}; manifest-src 'self'; base-uri 'none'; form-action 'self'`;
 writeFileSync(
   "dist-web/workspace.html",

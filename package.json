@@ -25,7 +25,7 @@
     "remote:configure": "node --experimental-strip-types scripts/remote.ts configure",
     "remote:enable": "node --experimental-strip-types scripts/remote.ts enable",
     "remote:disable": "node --experimental-strip-types scripts/remote.ts disable",
-    "test:client": "node --test tests/browser-client.test.mjs",
+    "test:client": "node --test tests/browser-client.test.mjs tests/replies.test.mjs tests/markdown.test.mjs",
     "test:dashboard": "node --experimental-strip-types tests/fixtures/dashboard-server.ts"
   },
   "devDependencies": {
@@ -34,6 +34,7 @@
     "@types/ws": "^8.18.2",
     "electron": "^44.5.1",
     "electron-builder": "^26.15.3",
+    "jsdom": "^29.1.1",
     "prettier": "^3.9.9",
     "typescript": "^5.9.0"
   },
@@ -41,6 +42,8 @@
     "@anthropic-ai/claude-agent-sdk": "0.3.286",
     "@simplewebauthn/browser": "^14.0.0",
     "@simplewebauthn/server": "^14.0.3",
+    "dompurify": "^3.4.16",
+    "marked": "^18.0.14",
     "qrcode": "^1.5.4",
     "ws": "^8.22.0"
   }

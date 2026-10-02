@@ -395,7 +395,12 @@ test("Gateway reports retention gaps and bounded malformed requests without disp
     d.headers,
   );
   assert.equal(r.status, 409);
-  assert.equal(((await r.json()) as any).error, "resync_required");
+  const gap: any = await r.json();
+  assert.equal(gap.error, "resync_required");
+  assert.equal(gap.retainedEventCursor, s.seq);
+  const stream = await req(`/api/sessions/${session.id}/events?after=${gap.retainedEventCursor}`, undefined, d.headers);
+  assert.equal(stream.status, 200);
+  await stream.body?.cancel();
   const big = await req(
     "/api/sessions",
     { project: "a", extra: "x".repeat(40000) },
@@ -408,6 +413,15 @@ test("Gateway reports retention gaps and bounded malformed requests without disp
     body: "null",
   });
   assert.equal(invalid.status, 400);
+});
+test("Markdown and reply modules are served locally with their browser dependencies", async (t) => {
+  const { req } = await setup(t);
+  for (const path of ["/markdown.mjs", "/replies.mjs", "/vendor/marked.mjs", "/vendor/purify.mjs"]) {
+    const response = await req(path);
+    assert.equal(response.status, 200, path);
+    assert.match(response.headers.get("content-type")!, /text\/javascript/);
+    assert((await response.text()).length > 0);
+  }
 });
 test("Local admin requires the root token and refuses browser-origin pairing creation", async (t) => {
   const { coreUrl, url } = await setup(t);

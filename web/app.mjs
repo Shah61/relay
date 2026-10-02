@@ -1,5 +1,10 @@
 import { Client, ApiError, readEvents } from "./client.mjs";
 import { browserTransport } from "./relay-client.mjs";
+import { renderMarkdown } from "./markdown.mjs";
+import { Replies, isTruncated } from "./replies.mjs";
+const replies = new Replies();
+const replyCards = new Map();
+let replyRenderPending = false;
 window.addEventListener("hashchange", () => {
   if (location.hash.startsWith("#pair=") || location.hash.startsWith("#local="))
     location.reload();
@@ -140,6 +145,7 @@ function signedOut() {
   $("#login").hidden = false;
   selected = null;
   snapshot = null;
+  resetReplies("Loading retained replies…");
 }
 async function boot() {
   try {
@@ -310,6 +316,7 @@ async function selectSession(id) {
   selected = id;
   cursor = 0;
   snapshot = null;
+  resetReplies("No replies yet. Codex’s messages will appear here as it works.");
   $("#activity").replaceChildren(
     el("p", "Loading retained activity…", "muted"),
   );
@@ -323,6 +330,7 @@ async function selectSession(id) {
 function renderDetail() {
   if (!snapshot) return;
   const s = snapshot.session;
+  $("#replies-title").textContent = `${name(s.agent)} replies`;
   $("#detail-agent").textContent = `${name(s.agent)} / ${s.id.slice(0, 8)}`;
   $("#detail-project").textContent = s.project;
   $("#turn-badge").textContent = human(s.currentTurn.state);
@@ -381,13 +389,49 @@ function renderDetail() {
       : "Unavailable in current state";
   renderApprovals($("#approval-inline"), snapshot.approvals);
 }
-function isTruncated(value) {
-  if (!value || typeof value !== "object") return false;
-  return (
-    value.truncated === true ||
-    !!value._truncation ||
-    Object.values(value).some(isTruncated)
-  );
+function resetReplies(message, gap = false) {
+  replies.clear();
+  replyCards.clear();
+  $("#replies").replaceChildren(el("p", message, gap ? "notice amber" : "muted"));
+  $("#replies-gap").hidden = !gap;
+}
+function scheduleReplies() {
+  if (replyRenderPending) return;
+  replyRenderPending = true;
+  requestAnimationFrame(() => {
+    replyRenderPending = false;
+    const root = $("#replies");
+    const nearBottom = root.scrollHeight - root.scrollTop - root.clientHeight < 70;
+    for (const [key, card] of replyCards) {
+      if (!replies.rows.has(key)) { card.entry.remove(); replyCards.delete(key); }
+    }
+    for (const row of replies.rows.values()) {
+      if (!row.text) continue;
+      let card = replyCards.get(row.key);
+      if (!card) {
+        if (!replyCards.size) root.replaceChildren();
+        const entry = el("article", undefined, "reply-card"), header = el("header"),
+          label = el("strong"), status = el("span", undefined, "muted"),
+          copy = el("button", "Copy Markdown"), body = el("div"),
+          warning = el("p", "This reply is truncated; additional content existed.", "error");
+        copy.type = "button";
+        copy.onclick = async () => {
+          try { await navigator.clipboard.writeText(row.text); toast("Reply copied"); }
+          catch { toast("Could not copy. Select the reply text to copy it."); }
+        };
+        header.append(label, status, copy);
+        entry.append(header, body, warning);
+        root.append(entry);
+        card = { entry, label, status, body, warning };
+        replyCards.set(row.key, card);
+      }
+      card.label.textContent = row.phase === "commentary" ? "Progress update" : "Reply";
+      card.status.textContent = row.status;
+      card.warning.hidden = !row.truncated;
+      if (card.text !== row.text) { renderMarkdown(card.body, row.text); card.text = row.text; }
+    }
+    if (nearBottom) root.scrollTop = root.scrollHeight;
+  });
 }
 function renderApprovals(root, rows) {
   const signature = pretty([rows, busy, client.device?.role]);
@@ -498,6 +542,7 @@ function eventText(e) {
   const r = e.raw,
     p = r?.params ?? r;
   const values = [
+    p?.item?.text,
     p?.delta,
     r?.event?.delta?.text,
     p?.output,
@@ -516,6 +561,7 @@ function eventText(e) {
   return "";
 }
 function renderEvent(e) {
+  if (replies.ingest(e)) scheduleReplies();
   const root = $("#activity"),
     entry = el("article", undefined, "event"),
     head = el("header");
@@ -525,7 +571,11 @@ function renderEvent(e) {
   );
   entry.append(head);
   const text = eventText(e);
-  if (text) entry.append(el("p", text));
+  if (text) {
+    const body = el("div");
+    renderMarkdown(body, text);
+    entry.append(body);
+  }
   if (isTruncated(e))
     entry.append(
       el("p", "Truncated evidence — additional content existed.", "error"),
@@ -572,6 +622,7 @@ async function stream(id, generation) {
             controller.abort();
             return;
           }
+          if (frame.id !== null && frame.id <= cursor) return;
           if (frame.id !== null) cursor = Math.max(cursor, frame.id);
           if (frame.type === "cursor") return;
           renderEvent(frame.data);
@@ -609,7 +660,8 @@ async function stream(id, generation) {
 async function resync(id) {
   const data = await updateSnapshot(id);
   if (!data) return;
-  cursor = data.latestEventSequence;
+  cursor = data.retainedEventCursor ?? data.latestEventSequence;
+  resetReplies("Reading the replies still retained for this session…", true);
   $("#activity").replaceChildren(
     el(
       "p",
@@ -681,11 +733,25 @@ $("#prompt-form").onsubmit = async (e) => {
       `/api/sessions/${selected}/${$("#input-mode").value}`,
       { text },
     );
-    if (result.operation?.state === "completed") $("#prompt").value = "";
+    if (result.operation?.state === "completed") { $("#prompt").value = ""; updatePreview(); }
   } catch (err) {
     failure(err);
   }
 };
+function updatePreview() {
+  if (!$("#prompt-preview").hidden)
+    renderMarkdown($("#prompt-preview"), $("#prompt").value || "Nothing to preview yet.");
+}
+$("#preview-prompt").onclick = () => {
+  const preview = $("#prompt-preview").hidden;
+  $("#prompt-preview").hidden = !preview;
+  $("#prompt").hidden = preview;
+  $("#preview-prompt").textContent = preview ? "Edit Markdown" : "Preview Markdown";
+  $("#preview-prompt").setAttribute("aria-pressed", String(preview));
+  updatePreview();
+  if (!preview) $("#prompt").focus();
+};
+$("#prompt").addEventListener("input", updatePreview);
 const controlText = {
   interrupt: [
     "Interrupt this turn?",
