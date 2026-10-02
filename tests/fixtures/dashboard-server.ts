@@ -32,7 +32,24 @@ class Demo extends AgentAdapter {
       state: "ready" as const,
       ready: true,
       reason: "TEST HARNESS ONLY — no inference",
-      models: this.agent === "codex" ? [{ id: "test-model", model: "test-model", displayName: "Test model", isDefault: true, defaultReasoningEffort: "medium", supportedReasoningEfforts: [{ reasoningEffort: "medium", description: "Synthetic test only" }] }] : undefined,
+      models:
+        this.agent === "codex"
+          ? [
+              {
+                id: "test-model",
+                model: "test-model",
+                displayName: "Test model",
+                isDefault: true,
+                defaultReasoningEffort: "medium",
+                supportedReasoningEfforts: [
+                  {
+                    reasoningEffort: "medium",
+                    description: "Synthetic test only",
+                  },
+                ],
+              },
+            ]
+          : undefined,
     };
   }
   capabilities() {
@@ -65,11 +82,51 @@ class Demo extends AgentAdapter {
     const reply = `## Simulated Codex reply\n\n**Markdown is ready.** This is a test response; no commands ran.\n\n- Formatted lists\n- Inline \`code\` and **bold text**\n\n\`\`\`js\nconst ready = true;\n\`\`\`\n\n| Feature | Status |\n| --- | --- |\n| Replies | Ready |\n| Markdown | Ready |\n\n> Please review the simulated approval below.\n\nYour prompt:\n\n${text}`;
     if (this.agent === "codex") {
       const itemId = id + "-reply";
-      this.emitEvent({ type: "agentMessage.started", source: "native", itemId, raw: { method: "item/started", params: { item: { type: "agentMessage", id: itemId, text: "", phase: "commentary" } } } });
+      this.emitEvent({
+        type: "agentMessage.started",
+        source: "native",
+        itemId,
+        raw: {
+          method: "item/started",
+          params: {
+            item: {
+              type: "agentMessage",
+              id: itemId,
+              text: "",
+              phase: "commentary",
+            },
+          },
+        },
+      });
       for (const delta of [reply.slice(0, 50), reply.slice(50)])
-        this.emitEvent({ type: "agent.message", source: "native", itemId, raw: { method: "item/agentMessage/delta", params: { itemId, delta } } });
-      this.emitEvent({ type: "agentMessage.completed", source: "native", itemId, raw: { method: "item/completed", params: { item: { type: "agentMessage", id: itemId, text: reply, phase: "commentary" } } } });
-    } else this.emitEvent({ type: "agent.message", source: "bridge", raw: { text: reply } });
+        this.emitEvent({
+          type: "agent.message",
+          source: "native",
+          itemId,
+          raw: { method: "item/agentMessage/delta", params: { itemId, delta } },
+        });
+      this.emitEvent({
+        type: "agentMessage.completed",
+        source: "native",
+        itemId,
+        raw: {
+          method: "item/completed",
+          params: {
+            item: {
+              type: "agentMessage",
+              id: itemId,
+              text: reply,
+              phase: "commentary",
+            },
+          },
+        },
+      });
+    } else
+      this.emitEvent({
+        type: "agent.message",
+        source: "bridge",
+        raw: { text: reply },
+      });
     this.emitEvent({
       type: "approval.requested",
       source: "bridge",
@@ -225,7 +282,10 @@ console.log(
     testHarness: true,
   }),
 );
+let stopping = false;
 async function stop() {
+  if (stopping) return;
+  stopping = true;
   relayHost?.stop();
   await relayServer?.close();
   frontend?.closeAllConnections();

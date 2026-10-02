@@ -6,6 +6,8 @@ Start with the [companion account setup guide](docs/hosted-relay-setup.md). User
 
 Requires Node 22.18+ with built-in `node:sqlite`. The real bridge runs only on loopback; its relay connector makes outbound connections. The local dashboard is `http://127.0.0.1:47832/`. No Tailscale or persistent OS service is required or installed.
 
+Session details include a dedicated **Codex replies** section (or Claude Code replies), with streamed messages assembled into Markdown, separate progress updates, and a Copy Markdown button. Headings, lists, code blocks, tables, quotes, and task lists render in replies and activity. The composer offers Markdown preview before sending. Only retained history is available; expired history and truncated text are labeled. Markdown is sanitized, remote images are omitted, and links open separately without a referrer.
+
 ```sh
 npm ci
 npm run build

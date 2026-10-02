@@ -239,14 +239,28 @@
                   </div>
                   <div id="inspector" class="inspector" hidden></div>
                   <div id="approval-inline"></div>
-                  <section aria-labelledby="replies-title" class="replies-section">
+                  <section
+                    aria-labelledby="replies-title"
+                    class="replies-section"
+                  >
                     <div class="activity-title">
                       <h3 id="replies-title">Codex replies</h3>
                       <span>Latest 100 messages</span>
                     </div>
-                    <p id="replies-gap" class="notice amber" hidden>Earlier history expired. Only retained replies are shown; a streamed reply may be incomplete.</p>
-                    <div id="replies" class="replies" aria-live="polite" aria-relevant="additions text">
-                      <p class="muted">No replies yet. Codex’s messages will appear here as it works.</p>
+                    <p id="replies-gap" class="notice amber" hidden>
+                      Earlier history expired. Only retained replies are shown;
+                      a streamed reply may be incomplete.
+                    </p>
+                    <div
+                      id="replies"
+                      class="replies"
+                      aria-live="polite"
+                      aria-relevant="additions text"
+                    >
+                      <p class="muted">
+                        No replies yet. Codex’s messages will appear here as it
+                        works.
+                      </p>
                     </div>
                   </section>
                   <div class="activity-title">
@@ -255,7 +269,17 @@
                   </div>
                   <div id="activity" class="activity" aria-live="polite"></div>
                   <form id="prompt-form" class="composer">
-                    <div class="composer-tools"><span>Markdown supported</span><button type="button" id="preview-prompt" aria-pressed="false" aria-controls="prompt-preview">Preview Markdown</button></div>
+                    <div class="composer-tools">
+                      <span>Markdown supported</span
+                      ><button
+                        type="button"
+                        id="preview-prompt"
+                        aria-pressed="false"
+                        aria-controls="prompt-preview"
+                      >
+                        Preview Markdown
+                      </button>
+                    </div>
                     <label class="sr-only" for="prompt">Message to agent</label
                     ><textarea
                       id="prompt"
@@ -263,7 +287,11 @@
                       maxlength="16000"
                       rows="3"
                     ></textarea>
-                    <div id="prompt-preview" class="prompt-preview" hidden></div>
+                    <div
+                      id="prompt-preview"
+                      class="prompt-preview"
+                      hidden
+                    ></div>
                     <div class="composer-footer">
                       <select id="input-mode" aria-label="Input mode">
                         <option value="prompt">Follow-up</option>
@@ -301,7 +329,12 @@
               <div id="remote-status"></div>
               <div id="host-setup" hidden>
                 <p id="host-state" class="notice">Checking connection…</p>
-                <p>Open Prompt Manager Companion and choose <strong>Connect this computer</strong>. Authorize it in your browser. Service settings are already included in the installed app.</p>
+                <p>
+                  Open Prompt Manager Companion and choose
+                  <strong>Connect this computer</strong>. Authorize it in your
+                  browser. Service settings are already included in the
+                  installed app.
+                </p>
                 <div class="phone-pair-actions">
                   <label for="phone-role">Phone access</label>
                   <select id="phone-role">
@@ -376,7 +409,10 @@
           <select id="start-model"></select>
           <label for="start-effort">Reasoning effort</label>
           <select id="start-effort"></select>
-          <p>Choices come from Codex on this computer. Availability depends on your signed-in account.</p>
+          <p>
+            Choices come from Codex on this computer. Availability depends on
+            your signed-in account.
+          </p>
         </div>
         <div id="start-hint" class="notice"></div>
         <button class="primary" id="start-submit">

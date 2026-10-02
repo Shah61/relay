@@ -5,13 +5,41 @@ import createDOMPurify from "./vendor/purify.mjs";
 export function renderMarkdown(target, text) {
   const document = target.ownerDocument;
   const purify = createDOMPurify(document.defaultView);
-  const fragment = purify.sanitize(marked.parse(String(text ?? ""), { gfm: true }), {
-    ALLOWED_TAGS: ["p", "br", "hr", "h1", "h2", "h3", "h4", "h5", "h6",
-      "strong", "em", "del", "blockquote", "ul", "ol", "li", "pre", "code",
-      "a", "table", "thead", "tbody", "tr", "th", "td", "input"],
-    ALLOWED_ATTR: ["href", "title", "start", "type", "checked", "disabled"],
-    RETURN_DOM_FRAGMENT: true,
-  });
+  const fragment = purify.sanitize(
+    marked.parse(String(text ?? ""), { gfm: true }),
+    {
+      ALLOWED_TAGS: [
+        "p",
+        "br",
+        "hr",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "strong",
+        "em",
+        "del",
+        "blockquote",
+        "ul",
+        "ol",
+        "li",
+        "pre",
+        "code",
+        "a",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "th",
+        "td",
+        "input",
+      ],
+      ALLOWED_ATTR: ["href", "title", "start", "type", "checked", "disabled"],
+      RETURN_DOM_FRAGMENT: true,
+    },
+  );
   for (const link of fragment.querySelectorAll("a")) {
     const href = link.getAttribute("href") ?? "";
     // Local paths are useful evidence but must not navigate authenticated routes.
