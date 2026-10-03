@@ -205,10 +205,10 @@ export class Sessions extends EventEmitter {
         config: settings.reasoningEffort ? { model_reasoning_effort: settings.reasoningEffort } : undefined,
         cwd,
         sandbox: "workspace-write",
-        approvalPolicy: "untrusted",
+        approvalPolicy: "on-request",
         approvalsReviewer: "user",
         developerInstructions:
-          "This is a disposable integration fixture. Work only in the current repository. Do not spawn agents. Do not access unrelated projects, secrets, networks or user files. Do not change Git config. If an operation is denied, do not retry it by another mechanism.",
+          "You are working in the user's project through Prompt Manager Companion. Work in the current repository and do not access unrelated projects, secrets, or user files. Do not spawn agents or change Git config. When asked to preview an app, start its development server bound to 127.0.0.1 and keep it running. If sandbox permissions prevent starting it (for example listen EPERM), request approval through the native command approval mechanism with the exact command and reason; the user can approve from their phone. Never bypass a denial or retry a command the user declined. Report the actual HTTP loopback URL in command output so Companion can detect it. The phone uses Companion's authenticated Remote Preview, not a direct localhost or LAN link. Do not claim the preview is running until the server has started successfully.",
       });
       const s: Session = {
         id: randomUUID(),

@@ -22,7 +22,7 @@ test("account relay keeps enrollment settings product-owned and bounds requests"
   });
   const status = await fetch(origin + "/health");
   assert.equal(status.status, 200);
-  assert.deepEqual(await status.json(), { status: "ok", protocol: 1 });
+  assert.deepEqual(await status.json(), { status: "ok", protocol: 1, previewHosting: false });
   const start = await fetch(origin + "/account-api/enrollment/start", {
     method: "POST",
     body: JSON.stringify({ name: "Office PC", platform: "win32" }),

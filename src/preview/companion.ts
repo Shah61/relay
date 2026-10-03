@@ -33,6 +33,7 @@ export class PreviewCompanion {
   retry?: NodeJS.Timeout;
   stopped = false;
   ready = false;
+  status: "offline" | "connecting" | "ready" | "unavailable" = "offline";
   requests = new Map<string, Http>();
   sockets = new Map<string, Socket>();
   constructor(targets: PreviewTargets) {
@@ -75,6 +76,7 @@ export class PreviewCompanion {
   }
   start() {
     if (this.stopped || !this.config?.account) return;
+    if (this.status !== "unavailable") this.status = "connecting";
     const ws = new WebSocket(this.config.relayUrl + "/preview-host", {
       headers: { Authorization: `Bearer ${this.config.hostToken}` },
       maxPayload: 131072,
@@ -98,7 +100,9 @@ export class PreviewCompanion {
     ws.on("open", () =>
       wire.send({ type: "hello", hostId: this.config!.hostId }),
     );
-    ws.on("error", () => {});
+    ws.on("error", () => {
+      if (this.socket === ws) this.status = "unavailable";
+    });
     ws.on("message", (data) => {
       if (this.socket !== ws) return;
       try {
@@ -106,6 +110,7 @@ export class PreviewCompanion {
         if (wire.acknowledge(m)) return;
         if (m.type === "ready") {
           this.ready = true;
+          this.status = "ready";
           for (const r of this.targets.records.values())
             if (r.state === "approved" && r.expiresAt > Date.now())
               this.register(r);
@@ -172,6 +177,7 @@ export class PreviewCompanion {
       wire.close();
       if (this.socket !== ws) return;
       this.ready = false;
+      if (this.status !== "unavailable") this.status = "offline";
       for (const id of [...this.requests.keys(), ...this.sockets.keys()])
         this.cancel(id);
       for (const r of this.targets.records.values()) r.previewId = undefined;
@@ -380,6 +386,7 @@ export class PreviewCompanion {
   disconnect() {
     this.stopped = true;
     this.ready = false;
+    this.status = "offline";
     clearTimeout(this.retry);
     for (const id of [...this.requests.keys(), ...this.sockets.keys()])
       this.cancel(id);

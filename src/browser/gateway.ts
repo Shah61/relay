@@ -246,7 +246,13 @@ export function browserGateway(
         return;
       }
       if (req.method === "GET" && url.pathname === "/api/previews") {
-        json({ previews: options.previews?.view(device.projects) ?? [], hosted: !!options.relay?.()?.config?.account }); return;
+        const relay = options.relay?.();
+        json({
+          previews: options.previews?.view(device.projects) ?? [],
+          hosted: !!relay?.config?.account,
+          hostingStatus: relay?.config?.account ? relay.previews?.status ?? "unavailable" : "not_enrolled",
+          dashboardOrigin: relay?.config?.frontendUrl,
+        }); return;
       }
       const previewAction = url.pathname.match(/^\/api\/previews\/([a-f0-9-]+)\/(approve|disable)$/);
       if (req.method === "POST" && previewAction) {

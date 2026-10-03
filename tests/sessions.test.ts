@@ -36,6 +36,26 @@ test('Selected model and reasoning reach thread creation and every turn', async 
   assert.equal(c.calls.at(-1).p.model, 'catalog-model');
   assert.equal(c.calls.at(-1).p.effort, 'high');
 });
+test('production sessions allow native command approval for a sandbox-blocked dev server', async (t) => {
+  const { c, s } = setup(t);
+  const session = await s.start('fixture');
+  const params = c.calls[0].p;
+  assert.equal(params.sandbox, 'workspace-write');
+  assert.equal(params.approvalPolicy, 'on-request');
+  assert.equal(params.approvalsReviewer, 'user');
+  assert.match(params.developerInstructions, /listen EPERM/);
+  assert.doesNotMatch(params.developerInstructions, /disposable integration fixture/);
+  c.emit('native', { method: 'turn/started', params: { threadId: session.threadId, turn: { id: 'preview-turn' } } });
+  c.emit('native', {
+    id: 10, method: 'item/commandExecution/requestApproval',
+    params: { threadId: session.threadId, turnId: 'preview-turn', command: 'npm run dev -- --host 127.0.0.1', reason: 'Sandbox denied local server binding with EPERM', availableDecisions: ['accept', 'decline'] },
+  });
+  const approval = [...s.approvals.values()][0];
+  assert.equal(session.status, 'waiting_approval');
+  assert.equal(c.sent.length, 0, 'server launch is not automatically approved');
+  s.approve(session.id, approval.id, s.generation, 'accept');
+  assert.deepEqual(c.sent[0], { id: 10, result: { decision: 'accept' } });
+});
 test("allowlist, early thread notification, persistence and monotonic sequence", async (t) => {
   const { c, s, dir } = setup(t);
   await assert.rejects(s.start("/tmp/arbitrary"));

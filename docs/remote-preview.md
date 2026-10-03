@@ -12,6 +12,18 @@ After approval and a bounded HTTP reachability check, the companion registers th
 
 ## Routing and production release configuration
 
+### A dev server fails with `listen EPERM`
+
+This means the local process could not open a listening socket; no running server exists for the relay to expose. It is independent of the phone's IP address. Codex sessions now use `on-request` with user-reviewed native command approvals and keep the workspace-write sandbox. Production instructions tell the agent to request permission for the exact dev-server command when sandbox binding is denied. They no longer identify real projects as disposable fixtures or prohibit the approval recovery flow. The change does not automatically grant network access or approve commands.
+
+Rebuild/reinstall Companion and start a new Codex session to receive the corrected thread instructions. Ask it to start the project's dev server on `127.0.0.1`; if a command approval appears, review it on the phone. Once actual command output reports the running server, enable its preview and open it. A declined command or an enforced machine policy remains a denial. Existing native threads keep their original instructions.
+
+Remote Preview works through public HTTPS and an outbound Companion connection, without LAN access, router port forwarding, or a shared Wi-Fi network. The laptop must remain awake and online with Companion and the server running. Closing the laptop may put it to sleep and disconnect the preview.
+
+The dashboard now distinguishes a disconnected preview connection, failed relay connection, and a computer that is not account-enrolled. It also uses the configured dashboard origin for launch links when opened from the local gateway. Relay `/health` reports `previewHosting: true` only when isolated preview hosting is configured; a missing field means the deployment predates this diagnostic. This flag alone does not verify public DNS/TLS routing.
+
+Recheck on 2026-10-03: 66 unit/integration tests and 14 browser-client/Markdown tests passed; type checking, dashboard build, and Companion compilation passed. Tests cover native approval forwarding (simulated agent transport), preview-host connection failure, and the existing disposable-server HTTP/WebSocket/security checks. Public Railway health responded and the Vercel preview launch rejected an unauthenticated request with 401. No production preview domain, real model-driven server launch, or physical cellular-device session was verified in this recheck. These changes require deployment and a Companion update before they affect the installed product.
+
 ```text
 Phone → Vercel /p/<preview-id> → Railway account authorization / one-use launch ticket
 Phone → <preview-id>.preview.example.com → Railway → outbound Companion preview socket → 127.0.0.1:<approved-port>
@@ -39,7 +51,7 @@ The dashboard launch verifies its HttpOnly account session and computer ownershi
 
 Preview credentials and dashboard cookies never reach the development server. App cookies remain per-preview and cannot set reserved authentication cookies or a parent Domain. Cross-origin requests and WebSocket origins are rejected; mutating app requests require the exact preview Origin. The companion ignores supplied destinations, connects only to its approved record, and never follows an upstream redirect. Same-target loopback redirects are rewritten to the preview origin; a loopback redirect to another port is rejected.
 
-Preview traffic is TLS-protected in production and visible to the relay, unlike the existing end-to-end encrypted prompt/session transport. A separate authenticated `/preview-host` connection carries preview data, with independent capacity/backpressure. No prompt frame format or agent adapter was changed.
+Preview traffic is TLS-protected in production and visible to the relay, unlike the existing end-to-end encrypted prompt/session transport. A separate authenticated `/preview-host` connection carries preview data, with independent capacity/backpressure. Prompt frame formats are unchanged. Codex thread initialization uses the native permission approval flow described above.
 
 ## Supported transport and limits
 

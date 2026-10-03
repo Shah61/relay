@@ -30,7 +30,7 @@ export function createRelay(token: string | Accounts, origins: string[], options
     res.end(
       JSON.stringify(
         req.url === "/health"
-          ? { status: "ok", protocol: 1 }
+          ? { status: "ok", protocol: 1, previewHosting: !!previews }
           : { error: "not_found" },
       ),
     );

@@ -390,6 +390,10 @@ test(
   { timeout: 30000 },
   async (t) => {
     const f = await fixture(t);
+    const hosting = (await f.remote('/api/previews')).body;
+    assert.equal(hosting.hostingStatus, 'ready');
+    assert.equal(hosting.dashboardOrigin, f.origin);
+    assert.equal(JSON.parse((await f.http('/health')).body.toString()).previewHosting, true);
     f.sessions.record(f.sessions.get(f.session.id), {
       type: "agent.message",
       source: "native",
@@ -656,3 +660,26 @@ test(
     assert.equal((await f.remote("/api/previews")).body.previews.length, 0);
   },
 );
+
+test('missing preview hosting is reported instead of waiting forever', { timeout: 10000 }, async (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'pm-preview-unconfigured-'));
+  const accounts = new Accounts(join(dir, 'accounts.sqlite'), 'http://127.0.0.1:47834');
+  const relay = createRelay(accounts, ['http://127.0.0.1:47834']);
+  relay.server.listen(0, '127.0.0.1');
+  await once(relay.server, 'listening');
+  const targets = new (await import('node:events')).EventEmitter() as any;
+  targets.records = new Map();
+  const companion = new PreviewCompanion(targets);
+  t.after(async () => {
+    companion.close(); await relay.close(); accounts.close();
+    rmSync(dir, { recursive: true, force: true });
+  });
+  const port = (relay.server.address() as any).port;
+  const health = await fetch(`http://127.0.0.1:${port}/health`).then(r => r.json());
+  assert.equal(health.previewHosting, false);
+  companion.connect({ relayUrl: `ws://127.0.0.1:${port}`, hostToken: 'test-only', hostId: randomUUID(), hostName: 'Test', frontendUrl: 'http://127.0.0.1:47834', account: {} as any });
+  await until(() => companion.status === 'unavailable');
+  assert.equal(companion.ready, false);
+  companion.disconnect();
+  assert.equal(companion.status, 'offline');
+});

@@ -96,6 +96,7 @@ let projects = [],
   allApprovals = [];
 const drafts = new Map();
 let previewRows = [];
+let previewHosting = "connecting", previewDashboardOrigin;
 const el = (tag, text, cls) => {
   const n = document.createElement(tag);
   if (text !== undefined) n.textContent = text;
@@ -885,13 +886,27 @@ $("#start-form").onsubmit = async (e) => {
   }
 };
 async function loadPreviews() {
-  try { const data = await client.get("/api/previews"); previewRows = data.previews; renderPreviews(); }
+  try {
+    const data = await client.get("/api/previews");
+    previewRows = data.previews;
+    previewHosting = data.hostingStatus ?? "connecting";
+    previewDashboardOrigin = data.dashboardOrigin;
+    renderPreviews();
+  }
   catch (e) { if (e.status !== 404) throw e; }
 }
 function renderPreviews() {
   const root = $("#preview-list"); root.replaceChildren();
+  const hostingMessage = previewHosting === "not_enrolled"
+    ? "Connect this computer to your Prompt Manager account to use Remote Preview."
+    : previewHosting === "unavailable"
+      ? "Remote Preview could not connect to the relay. Check the relay's preview domain configuration and update Companion, then refresh."
+      : previewHosting === "offline"
+        ? "Preview connection lost. Keep your computer awake, online, and Companion running."
+        : previewHosting === "connecting" ? "Connecting to remote preview hosting…" : "";
+  if (hostingMessage) root.append(el("p", hostingMessage, "muted"));
   const rows = previewRows.filter(r => r.sessionId === selected);
-  if (!rows.length) root.append(el("p", "Development servers will appear here when your agent reports them.", "muted"));
+  if (!rows.length) root.append(el("p", "Ask your agent to start the development server. If it reports listen EPERM, ask it to request permission to run the server and approve the command here. A running server will appear below. Open Preview works over mobile data or any Wi-Fi network.", "muted"));
   for (const r of rows) {
     const card = el("article", undefined, "preview-card"), info = el("div"), actions = el("div", undefined, "preview-actions");
     info.append(el("strong", r.state === "candidate" ? "Development server detected" : r.state === "running" ? "● Running" : "○ Connecting preview"), el("p", r.label));
@@ -908,8 +923,8 @@ function renderPreviews() {
       actions.append(approve);
     } else {
       const open = el("a", "Open Preview", "preview-open");
-      if (r.state === "running" && r.previewId) { open.href = `/p/${r.previewId}`; open.target = "_blank"; open.rel = "noopener noreferrer"; }
-      else { open.setAttribute("aria-disabled", "true"); info.append(el("small", "Waiting for preview hosting. Refresh in a moment.")); }
+      if (r.state === "running" && r.previewId) { open.href = new URL(`/p/${r.previewId}`, previewDashboardOrigin || location.origin).href; open.target = "_blank"; open.rel = "noopener noreferrer"; }
+      else { open.setAttribute("aria-disabled", "true"); info.append(el("small", hostingMessage || "Registering this server with the relay. Refresh in a moment.")); }
       actions.append(open);
     }
     const disable = el("button", "Disable Preview"); disable.disabled = busy || !canWrite();
